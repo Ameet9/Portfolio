@@ -7,6 +7,7 @@ const navigation = [
   { name: 'Learning', path: '/learning' },
   { name: 'Interview', path: '/interview' },
   { name: 'System Design', path: '/system-design' },
+  { name: 'Resume', path: '/resume' },
   { name: 'About', path: '/about' },
 ];
 
