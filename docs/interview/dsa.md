@@ -1,0 +1,81 @@
+# DSA Interview Notes — LRU Cache & Data Structure Design
+
+## LRU Cache
+
+### Q1: "Why not just use an ordered dictionary or array to track recency?"
+
+**Strong Answer:**
+"An array requires O(n) shifting to move an item to the front on every access. A plain dict (HashMap) gives O(1) lookup but has no concept of ordering — to find the least recently used key, you'd need to scan all entries, which is O(n).
+
+The HashMap + Doubly Linked List combination is the only way to achieve true O(1) for both operations:
+- **HashMap**: O(1) lookup of key → node
+- **Doubly Linked List**: O(1) removal (given the node reference) and O(1) insertion at the front
+
+Python's `OrderedDict` actually uses this same internal structure (dict + doubly linked list), but interviewers want to see that you understand what's happening under the hood, not just that you can call `move_to_end()`."
+
+---
+
+### Q2: "Walk me through what happens on a cache eviction."
+
+**Strong Answer:**
+"When `put(key, value)` is called and the cache is already at capacity:
+
+1. **Identify the LRU node**: It's always `tail.prev` (the node right before the tail sentinel). This is O(1) — no scanning needed.
+
+2. **Remove from the dict**: Delete `dict[lru_node.key]`. This is why we store the key *inside* the node — without it, we'd need an O(n) reverse lookup to find which dict key maps to this node.
+
+3. **Unlink from the list**: Set `lru_node.prev.next = lru_node.next` and `lru_node.next.prev = lru_node.prev`. O(1).
+
+4. **Insert the new node**: Create a new Node, add it right after the head sentinel (most recently used position), and add it to the dict.
+
+A common mistake is forgetting step 2 — removing from the list but not the dict, causing a memory leak and incorrect `get()` results."
+
+---
+
+### Q3: "Why use sentinel/dummy head and tail nodes?"
+
+**Strong Answer:**
+"Without sentinels, every linked list operation needs special-case code:
+- 'Is the list empty?'
+- 'Am I removing the head? Update head pointer.'
+- 'Am I removing the tail? Update tail pointer.'
+- 'Is this the only node? Set both head and tail to None.'
+
+With sentinels, every real node always has valid `.prev` and `.next` pointers. The removal logic is always just two pointer swaps — no conditionals. This eliminates an entire class of null-pointer bugs and makes the code both shorter and less error-prone.
+
+```
+Before: head ↔ A ↔ B ↔ C ↔ tail  (sentinels are always present)
+Remove B: head ↔ A ↔ C ↔ tail     (just relink A.next=C, C.prev=A)
+```
+
+This is a general linked list technique worth remembering for any problem — it simplifies every operation."
+
+---
+
+### Q4: "How would you make this thread-safe?"
+
+**Strong Answer:**
+"For a single-process in-memory cache, wrap `get()` and `put()` with a `threading.Lock`:
+
+```python
+def get(self, key):
+    with self._lock:
+        # ... existing logic
+```
+
+This serializes all cache operations. For better read concurrency, you could use a `ReadWriteLock` (multiple readers, exclusive writer), but the complexity is rarely worth it for an in-memory cache.
+
+This is exactly the kind of complexity that pushes production systems toward using a dedicated service like **Redis** instead — Redis is single-threaded internally, so all operations are naturally serialized without the application developer worrying about locks. It also provides persistence, replication, and can be shared across multiple server instances."
+
+---
+
+### Q5: "How does this relate to how Redis or a CDN handles eviction at scale?"
+
+**Strong Answer:**
+"Same core idea — track recency, evict least-recently-used — but with important differences at scale:
+
+1. **Redis's Approximated LRU**: Maintaining a perfect global LRU ordering across millions of keys is expensive (each access must update the list). Redis instead samples a configurable number of random keys (default 5, tunable via `maxmemory-samples`) and evicts the least recently used among the samples. This is O(1) regardless of total key count and achieves ~95% accuracy compared to true LRU.
+
+2. **Redis 4.0+ added LFU** (Least Frequently Used) as an alternative policy, which is better for workloads where a key is accessed heavily for a short period then never again (LRU would keep it cached; LFU would let it decay).
+
+3. **CDN Edge Caches** run independent LRU caches per edge node. There's no global ordering — a video might be evicted in Tokyo but still cached in Mumbai. This is acceptable because the origin server is the source of truth, and cache coherency at global scale is impractical."
