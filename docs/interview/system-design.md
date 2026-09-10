@@ -94,3 +94,52 @@ The sentinel/dummy node trick eliminates null checks at list boundaries — ever
 "Same core idea — track recency, evict least-recently-used — but at scale, maintaining a perfect global LRU ordering across millions of keys is expensive. Redis uses an **approximated LRU**: it samples a configurable number of random keys (default 5) and evicts the least recently used among those samples. This is O(1) regardless of total key count, and in practice achieves very close to true LRU behavior.
 
 CDNs face the same problem across geographically distributed edge nodes, where each node maintains its own local LRU cache. The tradeoff is cache coherency — a popular item might be evicted from one edge while still cached at another."
+
+---
+
+## Load Balancing & Proxies
+
+### Q8: "How would you scale an API that's getting too much traffic for one server?"
+
+**Strong Answer:**
+"The standard first step is horizontal scaling. I'd run multiple identical instances of the API server (e.g., as Docker containers) and place a Load Balancer (like Nginx, AWS ALB, or HAProxy) in front of them. The load balancer receives all incoming traffic and distributes it across the available instances.
+
+A critical requirement for this is **statelessness**: the application servers cannot store session data or file uploads in local memory or disk, because subsequent requests from the same user might route to a different instance. State must be pushed out to shared storage like Redis or S3."
+
+---
+
+### Q9: "What's the difference between round-robin and least-connections load balancing?"
+
+**Strong Answer:**
+"These are routing algorithms:
+- **Round-robin** blindly alternates requests (Instance 1, Instance 2, Instance 3, repeat). It's simple and works well if all requests take roughly the same amount of time.
+- **Least-connections** dynamically routes new requests to whichever backend currently has the fewest active connections. This is much better for workloads where request durations vary wildly (e.g., some requests take 10ms, some take 5 seconds) because it prevents a single server from getting clogged with all the slow requests while others sit idle."
+
+---
+
+### Q10: "What happens if one of your backend servers goes down?"
+
+**Strong Answer:**
+"A load balancer is only effective if it routes around failure. It achieves this using **Health Checks**.
+
+The load balancer periodically pings a specific endpoint (e.g., `/health`) on each backend server. If a server fails to respond, or returns a 5xx error, the load balancer removes it from the 'upstream' pool. Traffic is automatically redistributed to the healthy instances. Once the failing server recovers and passes its health checks again, it's added back to the pool."
+
+---
+
+### Q11: "Why can't you load-balance a server that stores session data in local memory?"
+
+**Strong Answer:**
+"Because HTTP is stateless, and load balancers distribute requests. User A logs in, and request #1 goes to Server 1. Server 1 stores their session in memory. Then User A clicks 'View Profile', and request #2 is routed by the load balancer to Server 2. Server 2 checks its local memory, doesn't see the session, and redirects the user back to the login page.
+
+To fix this, you either need:
+1. **Shared state**: Move sessions to an external store like Redis that all servers query. (Best practice).
+2. **Sticky Sessions**: Configure the load balancer to inject a cookie ensuring all requests from User A *always* route to Server 1. (Anti-pattern, makes scaling and deployments harder)."
+
+---
+
+### Q12: "What's the difference between a load balancer and a reverse proxy?"
+
+**Strong Answer:**
+"A **reverse proxy** sits in front of one or more backend servers and forwards client requests to them. Its primary jobs are abstraction, security, SSL termination, and caching.
+
+A **load balancer** is a specific type of reverse proxy whose primary job is to distribute traffic across *multiple* backend servers to increase capacity and reliability. Nginx is a reverse proxy that also functions as a load balancer."

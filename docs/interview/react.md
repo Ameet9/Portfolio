@@ -90,3 +90,33 @@ useEffect(() => {
 1. **Reusability** â€” `useDebounce` can be used in any component needing debounced values (search bars, form validation, auto-save). Without the hook, you'd copy-paste the useState + useEffect + setTimeout pattern everywhere.
 2. **Separation of concerns** â€” The component focuses on *what* to render; the hook encapsulates *when* a value should update. This makes both easier to read and modify independently.
 3. **Testability** â€” You can unit test the hook in isolation using `renderHook` from React Testing Library, without needing to render any UI component. This is much faster and more reliable than testing through the full UI."
+
+---
+
+## Custom Hooks & Pagination Patterns
+
+### Q6: "What is a custom hook, and when would you write one?"
+
+**Strong Answer:**
+"A custom hook is simply a JavaScript function whose name starts with `use` and that calls other React hooks internally. It allows you to extract and reuse stateful logic across multiple components.
+
+I write custom hooks when I notice multiple components needing the same non-visual behavior. For example: `useInfiniteScroll`, `useLocalStorage`, `useWindowSize`, or `useAuth`. By extracting this logic, the components stay focused on *rendering*, while the hook handles the *behavior*."
+
+---
+
+### Q7: "How would you prevent duplicate API calls if the sentinel element triggers the observer twice quickly?"
+
+**Strong Answer:**
+"This is a common issue with `IntersectionObserver` — rapid scrolling can fire the callback multiple times before the first API request finishes.
+
+You must guard the fetch logic with an `isLoading` state (either a state variable or a `useRef`). Before fetching, check `if (isLoading) return;`. Set it to true when the fetch starts, and false in a `finally` block when it ends. This ensures only one page is requested at a time."
+
+---
+
+### Q8: "How is infinite scroll different from pagination with 'Next' buttons?"
+
+**Strong Answer:**
+"From an API and data-fetching perspective, they are identical. Both rely on offset/limit or cursor-based paginated endpoints.
+
+The difference is purely UX and trigger mechanism. Standard pagination uses a manual click event to replace the current list of items. Infinite scroll uses an automatic scroll event (or IntersectionObserver) to *append* to the current list of items. Appending is critical — if you replace the list, the user loses their scroll position and the UX breaks."
+

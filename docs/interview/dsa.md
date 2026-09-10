@@ -79,3 +79,61 @@ This is exactly the kind of complexity that pushes production systems toward usi
 2. **Redis 4.0+ added LFU** (Least Frequently Used) as an alternative policy, which is better for workloads where a key is accessed heavily for a short period then never again (LRU would keep it cached; LFU would let it decay).
 
 3. **CDN Edge Caches** run independent LRU caches per edge node. There's no global ordering â€” a video might be evicted in Tokyo but still cached in Mumbai. This is acceptable because the origin server is the source of truth, and cache coherency at global scale is impractical."
+
+---
+
+## Tries (Prefix Trees) & Autocomplete
+
+### Q6: "What is the time complexity of inserting or searching a word in a Trie, and why?"
+
+**Strong Answer:**
+"The time complexity is O(L), where L is the length of the word, independent of how many words are stored in the Trie.
+
+This is because to insert or search for a word, you start at the root and follow exactly one edge per character of the word. If the word has 5 characters, you make 5 node transitions. This is a massive advantage over scanning a list of N words, which takes O(N × L) time."
+
+---
+
+### Q7: "How is a Trie different from a hash set for storing a dictionary of words?"
+
+**Strong Answer:**
+"A hash set gives O(1) time complexity for an exact word lookup (`word in my_set`), which is technically faster than a Trie's O(L). 
+
+However, a hash set cannot efficiently answer prefix queries like 'give me all words starting with 'app''. To do that with a hash set, you'd have to iterate through *every single word* in the set and check its prefix, which is O(N × L). A Trie is explicitly built for prefix queries — you traverse to the node representing 'app' in O(L) time, and then all valid completions are just the sub-tree below that node."
+
+---
+
+### Q8: "How would you implement autocomplete for a search bar with millions of entries — would a Trie alone be enough?"
+
+**Strong Answer:**
+"A Trie is the correct fundamental data structure, but it's not enough on its own for a Google-scale search bar. 
+
+1. **Ranking**: You need to store a 'frequency' or 'weight' at each terminal node so you can suggest the most popular completions first, not just alphabetically.
+2. **Top-K Caching**: To avoid running a full Depth-First Search on a massive sub-tree (e.g., the user types just 'a'), each Trie node can pre-compute and store a list of the Top-5 most popular completions that pass through it.
+3. **Distribution**: A single machine's memory might not fit a massive Trie. You'd shard the Trie across multiple servers (e.g., Server 1 handles prefixes a-f, Server 2 handles g-m).
+4. **Caching**: Put a CDN or Redis cache in front of the Trie service for the most common prefixes (like 'how to')."
+
+---
+
+### Q9: "What's the space trade-off of a Trie compared to just storing a list of strings?"
+
+**Strong Answer:**
+"It's a classic time-vs-space tradeoff. 
+
+On one hand, a Trie compresses space by sharing common prefixes — 'car' and 'cart' share the first three nodes.
+On the other hand, each character is now a full node object in memory. In languages like Python or Java, the object overhead (pointers to children, memory allocation headers) often means a Trie uses *more* raw memory than a contiguous flat array of strings. 
+
+If memory is extremely constrained, you might use a more compact variant like a Radix Tree (which merges nodes with single children)."
+
+---
+
+### Q10: "How would you delete a word from a Trie?"
+
+**Strong Answer:**
+"Deletion is the trickiest part of a Trie. You can't just delete the nodes, because other words might share that path.
+
+1. Walk down the tree to the final node of the word.
+2. Unmark the `is_end_of_word` flag. This logically deletes the word.
+3. Then, perform a bottom-up cleanup (often done recursively): if the current node has NO other children, AND is NOT the end of another word, you can safely delete it. You repeat this up the path until you hit a node that has other children or is an end word.
+
+A common mistake is forgetting the bottom-up cleanup, which leaves 'zombie' nodes that waste memory."
+
