@@ -164,3 +164,36 @@ extractMin(): Save root (index 0). Move the last element to index 0, pop the end
 
 **Strong Answer:**
 "When you repeatedly access the min/max while the data is continuously changing. Re-sorting after every new element costs O(n log n) per operation. With a heap, you pay O(n) once to build it, then O(log n) per insert or extract. Classic use cases: Dijkstra shortest path, live task schedulers, top-K streaming problems."
+
+---
+
+## Graphs & Topological Sort
+
+### Q14: "What is topological sorting and when is it possible?"
+
+**Strong Answer:**
+"Topological sort produces a linear ordering of nodes in a directed graph such that for every directed edge A ? B, node A appears before node B in the ordering. It is ONLY possible on a Directed Acyclic Graph (DAG). If there is a cycle (A ? B ? A), no valid ordering exists because A must come before B, and B must come before A simultaneously — a contradiction."
+
+---
+
+### Q15: "Walk me through Kahn's algorithm."
+
+**Strong Answer:**
+"Kahn's algorithm is a BFS-based approach:
+1. Build the adjacency list and compute the in-degree (number of incoming edges) for every node.
+2. Seed a queue with all nodes whose in-degree is 0 (no prerequisites).
+3. While the queue is not empty: pop a node, append it to the result, and for each of its neighbours, decrement their in-degree. If a neighbour's in-degree hits 0, enqueue it.
+4. After the loop: if the result list contains all nodes, you have a valid topological order. If it's shorter than the total node count, there is a cycle — some nodes were never unblocked because they were waiting on each other.
+
+Time complexity is O(V + E) — each vertex and edge is processed exactly once."
+
+---
+
+### Q16: "BFS (Kahn's) vs DFS topological sort — any real difference?"
+
+**Strong Answer:**
+"Both are O(V+E) and produce a valid topological order, but they differ in a few ways:
+
+- **Kahn's (BFS)** is iterative, easy to reason about, and cycle detection is natural — just check if the output is shorter than the node count. Easier to explain in an interview.
+
+- **DFS-based** tracks three node states (unvisited, in-progress, done). If DFS visits an 'in-progress' node, it has found a back-edge (cycle). It can be written more concisely but relies on recursion, which risks hitting Python's recursion limit on very large graphs."

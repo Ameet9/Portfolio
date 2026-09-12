@@ -146,3 +146,27 @@ Solutions:
 1. The async pipe (`| async` in templates) — Angular automatically subscribes and unsubscribes when the component is destroyed. This is the cleanest approach.
 2. `takeUntilDestroyed()` (Angular 16+) — pipes the observable to complete automatically when the component is destroyed.
 3. Store the Subscription in a variable and call `this.sub.unsubscribe()` inside `ngOnDestroy()`."
+
+---
+
+## WebSockets & Real-Time Patterns
+
+### Q11: "WebSockets vs. polling vs. Server-Sent Events — when would you use each?"
+
+**Strong Answer:**
+"These are three different solutions to the 'push data to the browser' problem, with different trade-offs:
+
+- **Polling** — The client repeatedly asks the server 'anything new?' on a timer (e.g. every 3s). Simple to implement with a normal REST endpoint, but wasteful: most requests return nothing. Use it only when real-time latency doesn't matter and implementation simplicity does.
+
+- **Server-Sent Events (SSE)** — A persistent HTTP connection where the server can push events to the client, but the client cannot send data back over the same connection. Perfect for one-directional feeds: live scores, stock price updates, log streaming. Simpler than WebSockets and automatically reconnects.
+
+- **WebSockets** — A persistent, full-duplex (bidirectional) connection. Either side can send data at any time. Necessary for chat apps, collaborative editing, or multiplayer games where the client also sends frequent data. More complex to implement and scale."
+
+---
+
+### Q12: "How would you scale a WebSocket chat server to multiple instances?"
+
+**Strong Answer:**
+"This is the core challenge. Each server instance only knows about its own in-memory list of connected clients. If user A sends a message and lands on Server 1, but user B is connected to Server 2, B never receives the message.
+
+The fix is a **pub/sub broadcast layer** shared between all server instances. Redis pub/sub is the standard solution: when Server 1 receives a message from user A, it publishes the message to a Redis channel. All server instances are subscribed to that channel, so each one receives the published message and broadcasts it to their local connected clients."

@@ -166,3 +166,41 @@ Throttling is softer: instead of rejecting requests, it queues or delays them to
 
 For a read-heavy public API, fail-open is usually better. For a sensitive endpoint like login/OTP generation, fail-closed is safer to prevent brute-force attacks during a Redis outage. In production, you'd use Redis Sentinel or Redis Cluster for high availability so single-node failures don't bring down the rate limiter."
 
+
+---
+
+## Serverless Architecture
+
+### Q15: "Explain serverless computing and how it differs from containers or VMs."
+
+**Strong Answer:**
+"There are three levels of infrastructure abstraction:
+
+- **VMs** — You manage the OS, patches, runtime, and scaling. Full control but high ops burden.
+- **Containers** — You manage the runtime and app logic; the container platform manages the OS. Better DX but you still manage scaling and keep containers running.
+- **Serverless** — You only manage the function code. The cloud provider handles everything else: provisioning, scaling (including to zero), patching, OS. You pay per invocation, not per hour running.
+
+The trade-offs of serverless: no server management and near-zero idle cost, but limited execution time (Lambda max 15 min), cold starts, less control over the runtime environment, and it can become more expensive than containers at very high sustained throughput."
+
+---
+
+### Q16: "What is a cold start and how would you reduce its impact?"
+
+**Strong Answer:**
+"A cold start happens when a Lambda function hasn't been called recently and AWS needs to provision a brand-new execution environment. It has to download your code, start the runtime (e.g. Python interpreter), and run your initialization code before handling the first request. This adds latency — typically 100ms–1s depending on your package size and language.
+
+Mitigation strategies:
+1. **Minimize package size** — fewer dependencies = faster initialization.
+2. **Use a faster-starting runtime** — Python and Node.js cold-start faster than JVM-based languages.
+3. **Provisioned Concurrency** — AWS keeps a specified number of instances pre-warmed. Eliminates cold starts but costs money even when idle.
+4. **Lazy initialization** — move expensive setup (DB connections, SDK clients) outside the handler but inside the module scope, so it's cached after the first cold start."
+
+---
+
+### Q17: "When would you NOT choose serverless?"
+
+**Strong Answer:**
+"Three clear cases:
+1. **Steady, predictable high traffic** — you pay per invocation on Lambda. If you have constant traffic, a container running 24/7 on ECS/Kubernetes is cheaper.
+2. **Long-running processes** — Lambda has a 15-minute maximum execution timeout. Video transcoding, large data migrations, or ML training jobs don't fit this model.
+3. **Fine-grained runtime control** — serverless abstracts away the OS and runtime. If you need specific kernel versions, GPU access, or custom system libraries, containers or VMs give you more flexibility."

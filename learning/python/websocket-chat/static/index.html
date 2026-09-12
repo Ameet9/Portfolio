@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+        .header {
+            background-color: #25D366;
+            color: white;
+            padding: 15px 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        #messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message {
+            background-color: #e4e6eb;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            align-self: flex-start;
+        }
+        .message-time {
+            font-size: 0.75rem;
+            color: #65676b;
+            margin-top: 5px;
+            text-align: right;
+            display: block;
+        }
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            gap: 10px;
+        }
+        #messageText {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 1rem;
+            outline: none;
+        }
+        #messageText:focus {
+            border-color: #25D366;
+        }
+        button {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #1ebe57;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="header">
+        FastAPI WebSocket Chat <span id="clientIdDisplay"></span>
+    </div>
+    <div id="messages">
+        <!-- Messages will be injected here -->
+    </div>
+    <form class="input-area" action="" onsubmit="sendMessage(event)">
+        <input type="text" id="messageText" autocomplete="off" placeholder="Type a message..." required/>
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+<script>
+    // Generate a random client ID between 1 and 1000
+    const clientId = Math.floor(Math.random() * 1000) + 1;
+    document.getElementById('clientIdDisplay').textContent = `(You are Client #${clientId})`;
+
+    // Initialize the WebSocket connection
+    // Note: Use wss:// for HTTPS connections in production
+    const ws = new WebSocket(`ws://localhost:8000/ws/${clientId}`);
+
+    // Event listener for incoming messages from the server
+    ws.onmessage = function(event) {
+        const messagesDiv = document.getElementById('messages');
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message';
+        
+        // Get current time
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        messageElement.innerHTML = `
+            ${event.data}
+            <span class="message-time">${timeString}</span>
+        `;
+        
+        messagesDiv.appendChild(messageElement);
+        
+        // Auto-scroll to the bottom
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    };
+
+    // Handle form submission to send a message
+    function sendMessage(event) {
+        event.preventDefault(); // Prevent page reload
+        const input = document.getElementById("messageText");
+        
+        // Send the raw text to the server over the WebSocket
+        ws.send(input.value);
+        
+        // Clear the input field
+        input.value = '';
+    }
+</script>
+
+</body>
+</html>
