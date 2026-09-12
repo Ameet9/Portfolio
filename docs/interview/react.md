@@ -120,3 +120,29 @@ You must guard the fetch logic with an `isLoading` state (either a state variabl
 
 The difference is purely UX and trigger mechanism. Standard pagination uses a manual click event to replace the current list of items. Infinite scroll uses an automatic scroll event (or IntersectionObserver) to *append* to the current list of items. Appending is critical — if you replace the list, the user loses their scroll position and the UX breaks."
 
+
+---
+
+## RxJS & Angular Patterns
+
+### Q9: "What is the difference between switchMap, mergeMap, concatMap, and exhaustMap?"
+
+**Strong Answer:**
+"These are all RxJS higher-order mapping operators — they each take a value from an outer observable and map it to an inner observable. The difference is in how they handle a new outer emission arriving while an inner observable is still in flight.
+
+- switchMap: Cancels the previous inner observable and starts a new one. Best for search-as-you-type — you always want the latest result, not a stale old one.
+- mergeMap: Runs all inner observables concurrently without cancellation. Good for independent parallel requests.
+- concatMap: Queues emissions. Each inner observable must complete before the next one starts. Good for ordered operations like chained API calls.
+- exhaustMap: Ignores new emissions while one inner observable is still active. Perfect for form submission buttons — it prevents double-submitting if the user clicks twice."
+
+---
+
+### Q10: "What is a memory leak risk with RxJS subscriptions, and how do you avoid it?"
+
+**Strong Answer:**
+"If you call `.subscribe()` manually without ever calling `.unsubscribe()`, the subscription remains active even after the component is destroyed. The callback will keep firing (and trying to update destroyed component state), which can cause errors and prevent garbage collection.
+
+Solutions:
+1. The async pipe (`| async` in templates) — Angular automatically subscribes and unsubscribes when the component is destroyed. This is the cleanest approach.
+2. `takeUntilDestroyed()` (Angular 16+) — pipes the observable to complete automatically when the component is destroyed.
+3. Store the Subscription in a variable and call `this.sub.unsubscribe()` inside `ngOnDestroy()`."

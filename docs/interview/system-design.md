@@ -143,3 +143,26 @@ To fix this, you either need:
 "A **reverse proxy** sits in front of one or more backend servers and forwards client requests to them. Its primary jobs are abstraction, security, SSL termination, and caching.
 
 A **load balancer** is a specific type of reverse proxy whose primary job is to distribute traffic across *multiple* backend servers to increase capacity and reliability. Nginx is a reverse proxy that also functions as a load balancer."
+
+---
+
+## API Gateways & Protection
+
+### Q13: "What's the difference between rate limiting and throttling?"
+
+**Strong Answer:**
+"Rate limiting typically acts as a hard wall: it rejects excess requests outright, returning a 429 Too Many Requests status to protect the system.
+
+Throttling is softer: instead of rejecting requests, it queues or delays them to smooth out traffic spikes (traffic shaping). You might throttle a heavy background sync job to run slowly, but you rate-limit a public API endpoint to prevent abuse."
+
+---
+
+### Q14: "What happens if Redis goes down — does your whole API go down?"
+
+**Strong Answer:**
+"It depends on your failure strategy. You have two choices:
+1. **Fail-open**: If Redis is unreachable, allow all requests through. This prioritizes availability but risks your backend being overwhelmed.
+2. **Fail-closed**: If Redis is unreachable, reject all requests. This prioritizes protection but brings your API down.
+
+For a read-heavy public API, fail-open is usually better. For a sensitive endpoint like login/OTP generation, fail-closed is safer to prevent brute-force attacks during a Redis outage. In production, you'd use Redis Sentinel or Redis Cluster for high availability so single-node failures don't bring down the rate limiter."
+

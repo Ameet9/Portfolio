@@ -137,3 +137,30 @@ If memory is extremely constrained, you might use a more compact variant like a 
 
 A common mistake is forgetting the bottom-up cleanup, which leaves 'zombie' nodes that waste memory."
 
+
+---
+
+## Priority Queues & Heaps
+
+### Q11: "Implement a min-heap insert and extractMin from scratch."
+
+**Strong Answer:**
+"A heap is a complete binary tree stored as a flat array. The parent of index i is (i-1)//2, left child is 2i+1, right child is 2i+2.
+
+insert(val): Append to the end of the array, then bubble up — repeatedly swap with parent while smaller than parent. O(log n).
+
+extractMin(): Save root (index 0). Move the last element to index 0, pop the end, then bubble down — swap with the smaller of the two children until the heap property holds. O(log n)."
+
+---
+
+### Q12: "Why is building a heap O(n), not O(n log n)?"
+
+**Strong Answer:**
+"Inserting n elements one by one is O(n log n). But heapify (bubble down from the middle to the root) is O(n). Half the nodes are leaves with 0 swaps. A quarter need 1 swap. Only the root can need log(n) swaps. The geometric sum of work across all levels converges to O(n) — a counterintuitive but important fact to cite."
+
+---
+
+### Q13: "When would you use a heap instead of sorting?"
+
+**Strong Answer:**
+"When you repeatedly access the min/max while the data is continuously changing. Re-sorting after every new element costs O(n log n) per operation. With a heap, you pay O(n) once to build it, then O(log n) per insert or extract. Classic use cases: Dijkstra shortest path, live task schedulers, top-K streaming problems."
