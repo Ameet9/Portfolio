@@ -1,0 +1,121 @@
+:root {
+  --bg-color: #f4f5f7;
+  --text-color: #172b4d;
+  --column-bg: #ebecf0;
+  --card-bg: #ffffff;
+  --primary-color: #0079bf;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  padding: 1rem 2rem;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.undo-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.undo-btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.undo-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.board {
+  display: flex;
+  gap: 1.5rem;
+  padding: 2rem;
+  flex: 1;
+  overflow-x: auto;
+  align-items: flex-start;
+}
+
+.column {
+  background-color: var(--column-bg);
+  border-radius: 8px;
+  width: 300px;
+  min-width: 300px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 100px);
+}
+
+.column h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 50px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.card {
+  background-color: var(--card-bg);
+  border-radius: 4px;
+  padding: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  cursor: grab;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #5e6c84;
+}
+
+.drag-over {
+  background-color: rgba(0, 121, 191, 0.1);
+  border: 2px dashed var(--primary-color);
+}
+
+.add-card {
+  margin-top: 1rem;
+}
+
+.add-card input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  box-sizing: border-box;
+}

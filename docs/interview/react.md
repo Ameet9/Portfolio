@@ -170,3 +170,37 @@ Solutions:
 "This is the core challenge. Each server instance only knows about its own in-memory list of connected clients. If user A sends a message and lands on Server 1, but user B is connected to Server 2, B never receives the message.
 
 The fix is a **pub/sub broadcast layer** shared between all server instances. Redis pub/sub is the standard solution: when Server 1 receives a message from user A, it publishes the message to a Redis channel. All server instances are subscribed to that channel, so each one receives the published message and broadcasts it to their local connected clients."
+
+---
+
+## Vue / Frontend State Management
+
+### Q13: "When would you reach for Pinia instead of just component state?"
+
+**Strong Answer:**
+"Component state (ref/reactive) is the right default when state is truly local to one component and its direct children. Pinia is the right move when:
+1. Multiple unrelated components need to read or mutate the same data (e.g., a Kanban board where Column A and Column B both need the cards list).
+2. State needs to survive component unmount/remount cycles.
+3. The mutation logic is complex enough to benefit from being centralized, named, and independently testable \u2014 a Pinia action is much easier to unit test than an event emitted three levels deep through components."
+
+---
+
+### Q14: "Why normalize state instead of nesting objects?"
+
+**Strong Answer:**
+"Nested state creates two problems:
+1. **Expensive updates**: if cards are nested inside columns as full objects, moving a card means finding and splicing the object out of one column's array and pushing it into another \u2014 O(n) search operations on nested structures.
+2. **Duplication risk**: if the same card is referenced in multiple places (e.g., a 'favorites' view), you have two copies that can drift out of sync.
+
+Normalization fixes both: store cards by ID in a flat lookup object (`cards: { 'c1': {...} }`), and have columns only store arrays of IDs. Moving a card is now two cheap array operations: splice one ID out, push it into another. This is the same reasoning as database normalization \u2014 avoid storing the same fact in two places."
+
+---
+
+### Q15: "What is optimistic UI, and what is the risk?"
+
+**Strong Answer:**
+"Optimistic UI means updating the local state immediately when a user takes an action \u2014 before the server has confirmed the operation succeeded \u2014 to make the app feel instant.
+
+The risk: the server might reject the operation (validation error, network failure, conflict). You must handle this failure case by rolling back the UI to its previous state and showing the user an error. If you don't handle rollback, the UI lies \u2014 it shows a state that doesn't match reality.
+
+The pattern: snapshot state before the action, apply the optimistic update, wait for the server response. On failure, restore the snapshot."

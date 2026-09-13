@@ -204,3 +204,49 @@ Mitigation strategies:
 1. **Steady, predictable high traffic** — you pay per invocation on Lambda. If you have constant traffic, a container running 24/7 on ECS/Kubernetes is cheaper.
 2. **Long-running processes** — Lambda has a 15-minute maximum execution timeout. Video transcoding, large data migrations, or ML training jobs don't fit this model.
 3. **Fine-grained runtime control** — serverless abstracts away the OS and runtime. If you need specific kernel versions, GPU access, or custom system libraries, containers or VMs give you more flexibility."
+
+---
+
+## Message Queues & Async Processing
+
+### Q18: "How would you design a system where a user action triggers a slow downstream process?"
+
+**Strong Answer:**
+"I would decouple the user-facing request from the slow work using a message queue. The API endpoint accepts the request, validates it, publishes a message to a queue (e.g. RabbitMQ, SQS), and immediately returns 202 Accepted to the user. A separate worker process consumes messages from the queue and does the slow work asynchronously.
+
+This gives you three wins: the user's request completes in milliseconds instead of seconds, you can scale workers independently from the API when work piles up, and if the worker crashes, unprocessed messages stay safely in the queue until it recovers. If the user needs to track the result, you can give them a job ID to poll, or trigger a webhook/notification when done."
+
+---
+
+### Q19: "What is the difference between a message queue and a pub-sub system?"
+
+**Strong Answer:**
+"The key difference is delivery semantics:
+
+- **Message Queue (Point-to-Point)**: Each message is consumed by exactly ONE consumer. Multiple workers can compete for messages from the same queue, which is great for distributing work \u2014 if you have 10 orders in the queue and 3 workers, each order gets processed once. RabbitMQ queues and AWS SQS work this way.
+
+- **Pub-Sub**: Each message is delivered to ALL subscribers. If 3 services are subscribed to an 'order.created' topic, all 3 get a copy. Great for broadcasting events (e.g., notifying inventory, email, and analytics all at once). Kafka and SNS work this way.
+
+RabbitMQ can do both depending on how you configure the exchange type (direct/topic = queue-like, fanout = pub-sub)."
+
+---
+
+### Q20: "How do you handle a message that keeps failing to process?"
+
+**Strong Answer:**
+"Three-layer strategy:
+1. **Immediate retry**: retry once or twice with a short backoff in case of transient errors (network blip, momentary timeout).
+2. **Delayed retry with backoff**: after the immediate retries fail, re-queue the message with an increasing delay (1s, 5s, 30s) so a temporarily-down dependency has time to recover without flooding it.
+3. **Dead-Letter Queue (DLQ)**: after N total retries, stop retrying and route the message to a DLQ \u2014 a separate queue for messages that couldn't be processed. A human or automated process can inspect them, fix the underlying bug, and replay them later.
+
+The worst alternatives are silently dropping messages (data loss) or retrying forever (one bad message blocks the whole queue)."
+
+---
+
+### Q21: "Why not just use a background thread in the API instead of a separate queue?"
+
+**Strong Answer:**
+"Three reasons:
+1. **Durability**: if your API process crashes mid-thread, the in-flight work is lost. A message queue persists messages on disk \u2014 the work survives restarts.
+2. **Independent scaling**: with a queue, you can run 1 API instance and 20 worker instances, or vice versa. A thread inside the API process scales with the API, not with the workload.
+3. **Lifecycle decoupling**: during a deploy, you restart the API without losing queued work. Workers can drain their current messages before restarting. In-process threads don't survive that boundary."

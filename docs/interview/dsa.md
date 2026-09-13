@@ -197,3 +197,38 @@ Time complexity is O(V + E) — each vertex and edge is processed exactly once."
 - **Kahn's (BFS)** is iterative, easy to reason about, and cycle detection is natural — just check if the output is shorter than the node count. Easier to explain in an interview.
 
 - **DFS-based** tracks three node states (unvisited, in-progress, done). If DFS visits an 'in-progress' node, it has found a back-edge (cycle). It can be written more concisely but relies on recursion, which risks hitting Python's recursion limit on very large graphs."
+
+---
+
+## Union-Find (Disjoint Set Union)
+
+### Q17: "What is the time complexity of Union-Find with path compression and union by rank?"
+
+**Strong Answer:**
+"The amortized time per operation is O(alpha(n)) \u2014 the inverse Ackermann function. In practice this is effectively constant: alpha(n) < 5 for any n that could exist in the physical universe. The correct interview answer is 'nearly O(1) amortized' and be ready to explain that it's not exactly O(1) because the inverse Ackermann function, while incredibly slow-growing, is technically not bounded by a constant."
+
+---
+
+### Q18: "Why do we need BOTH path compression AND union by rank?"
+
+**Strong Answer:**
+"Each optimization attacks a different failure mode:
+
+- **Union by rank** prevents building tall trees in the first place by always attaching the smaller tree under the larger one's root. Without it, a bad sequence of unions (always merging small under big in the wrong direction) builds a long chain, making `find` O(n).
+
+- **Path compression** flattens existing trees lazily during `find` operations \u2014 as you walk up to find the root, you re-point every node directly to the root. This heals previously-tall trees over time.
+
+Together they guarantee near-constant amortized time. Either alone gives you O(log n), which is good but not the famous O(alpha(n)) bound."
+
+---
+
+### Q19: "When would you use Union-Find instead of BFS/DFS for connectivity?"
+
+**Strong Answer:**
+"The key distinction is whether the graph is static or dynamic (edges being added over time):
+
+- **BFS/DFS**: best for a one-time traversal of a static graph. O(V+E) per query. If you need to check connectivity 1000 times on the same graph, you'd run BFS 1000 times.
+
+- **Union-Find**: best for the 'online' problem \u2014 edges arrive incrementally and you need fast repeated connectivity queries. After building the structure in O(n * alpha(n)), each `connected(a, b)` query is effectively O(1). Also cannot retrieve the actual path between nodes \u2014 only group membership.
+
+Use Union-Find when: edges are added but never removed, you need repeated connectivity checks, and you don't need the actual path."
