@@ -2,28 +2,28 @@ import { Link } from 'react-router-dom';
 
 const highlights = [
   {
-    title: 'Projects',
-    description: '10 flagship projects demonstrating production engineering',
+    title: 'Daily Builds',
+    description: 'Hands-on projects covering full-stack, systems, and DSA',
     path: '/projects',
-    count: '10',
+    count: '18',
   },
   {
-    title: 'Learning',
-    description: 'Deep technical notes following the 21-section template',
+    title: 'Engineering Notes',
+    description: 'Deep technical learning notes on core mechanics',
     path: '/learning',
-    count: '100+',
+    count: '16',
   },
   {
     title: 'System Design',
-    description: 'Architecture case studies with trade-off analysis',
+    description: 'Architecture case studies with code and trade-offs',
     path: '/system-design',
-    count: '14',
+    count: '6',
   },
   {
     title: 'Interview Prep',
-    description: 'Senior-level interview notes organized by technology',
+    description: 'Senior-level Q&A extracted from actual project work',
     path: '/interview',
-    count: '25+',
+    count: '24',
   },
 ];
 
@@ -31,21 +31,20 @@ export default function Home() {
   return (
     <div className="space-y-16">
       {/* Hero */}
-      <section className="text-center py-16">
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
+      <section className="text-center pt-20 pb-16">
+        <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-8">
           Senior Engineer Lab
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8">
+        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed">
           A complete public demonstration of how I think, learn, design, build, secure,
-          test, deploy, observe, debug, optimize, scale and continuously improve software
-          systems in the AI era.
+          test, deploy, observe, debug, optimize, and scale software systems in the AI era.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             to="/projects"
             className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg font-medium hover:opacity-90 transition-opacity"
           >
-            View Projects
+            Explore Daily Builds
           </Link>
           <Link
             to="/learning"
@@ -63,13 +62,15 @@ export default function Home() {
             <Link
               key={item.path}
               to={item.path}
-              className="group p-6 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
+              className="group p-6 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 transition-colors bg-white dark:bg-gray-950"
             >
-              <div className="text-3xl font-bold mb-2">{item.count}</div>
-              <h3 className="text-lg font-semibold mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              <div className="text-4xl font-black mb-3 text-gray-900 dark:text-white">
+                {item.count}
+              </div>
+              <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 {item.title}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 {item.description}
               </p>
             </Link>
@@ -78,18 +79,17 @@ export default function Home() {
       </section>
 
       {/* Philosophy */}
-      <section className="max-w-3xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6">Engineering Philosophy</h2>
-        <div className="space-y-3 text-gray-600 dark:text-gray-400">
+      <section className="max-w-3xl mx-auto py-8">
+        <h2 className="text-2xl font-bold mb-6">The Engineering Philosophy</h2>
+        <div className="space-y-4 text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
           <p>
-            This is <strong className="text-gray-900 dark:text-white">not</strong> a collection of tutorials or toy projects.
-            Every project demonstrates real engineering: architecture decisions, security,
-            testing, deployment, observability, and performance optimization.
+            This is <strong className="text-gray-900 dark:text-white font-semibold">not</strong> a collection of tutorials or toy projects.
+            Every piece of code here exists to demonstrate a specific architectural decision, algorithm, or scaling technique.
           </p>
           <p>
-            Optimizing for <strong className="text-gray-900 dark:text-white">depth</strong>,
+            I optimize for <strong className="text-gray-900 dark:text-white font-semibold">depth</strong>,
             engineering judgment, correctness, maintainability, and trade-off awareness —
-            not for the number of repositories or technologies listed.
+            because senior engineering is about knowing <em>why</em> a pattern works, not just <em>how</em> to type it.
           </p>
         </div>
       </section>
