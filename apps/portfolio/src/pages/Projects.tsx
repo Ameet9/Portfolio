@@ -252,6 +252,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Path compression', 'Union by rank', 'O(α(n))', 'Online algorithms'],
     path: 'learning/dsa/union-find',
   },
+  // Sept 14
+  {
+    id: 'k8s-self-healing',
+    title: 'Self-Healing Pods with Kubernetes',
+    date: 'Sept 14',
+    category: 'System Design',
+    stack: ['Kubernetes', 'Minikube', 'Docker', 'Python'],
+    description: 'Local K8s cluster demonstrating the orchestration control loop. Features a Flask API managed by a Deployment with replicas and liveness/readiness probes, automatically recovering from manual pod deletion.',
+    concepts: ['Reconciliation loop', 'Deployments vs Pods', 'Services', 'Liveness/Readiness probes'],
+    path: 'learning/system-design/k8s-self-healing',
+  },
+  {
+    id: 'websocket-ticker',
+    title: 'Live Ticker (Auto-Reconnecting WebSocket)',
+    date: 'Sept 14',
+    category: 'React',
+    stack: ['React', 'TypeScript', 'WebSockets'],
+    description: 'Custom React hook for WebSockets implementing exponential backoff and connection state management. Visualizes live price ticks with flash-green/red CSS animations using refs.',
+    concepts: ['WebSockets', 'Exponential backoff', 'useEffect cleanup', 'useRef for previous state'],
+    path: 'learning/react/websocket-ticker',
+  },
+  {
+    id: 'lcs-diff',
+    title: 'Text Diff Tool (Longest Common Subsequence)',
+    date: 'Sept 14',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'A line-by-line file comparison tool built from scratch using the DP Longest Common Subsequence algorithm. Demonstrates building the DP table and backtracking to generate +/- diffs.',
+    concepts: ['Dynamic Programming', 'LCS', 'Backtracking DP table', 'Git diff concepts'],
+    path: 'learning/dsa/lcs-diff',
+  },
   // Sept 15
   {
     id: 'terraform-localstack',

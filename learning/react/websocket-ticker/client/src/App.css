@@ -1,0 +1,89 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: sans-serif;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.status-badge.open {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.connecting {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.closed {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.ticker-grid {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ticker-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+
+.ticker-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.5s ease;
+}
+
+.ticker-row:last-child {
+  border-bottom: none;
+}
+
+.ticker-name {
+  font-weight: 600;
+}
+
+.ticker-price {
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+/* Animations for flashing */
+@keyframes flashGreen {
+  0% { background-color: rgba(40, 167, 69, 0.4); }
+  100% { background-color: transparent; }
+}
+
+@keyframes flashRed {
+  0% { background-color: rgba(220, 53, 69, 0.4); }
+  100% { background-color: transparent; }
+}
+
+.flash-up {
+  animation: flashGreen 1s ease-out;
+}
+
+.flash-down {
+  animation: flashRed 1s ease-out;
+}

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: self-healing-app
+  labels:
+    app: self-healing-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: self-healing-app
+  template:
+    metadata:
+      labels:
+        app: self-healing-app
+    spec:
+      containers:
+      - name: flask-app
+        image: self-healing-app:v1
+        imagePullPolicy: Never # Forces Minikube to use the local docker daemon image
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: app-config
+        
+        # Liveness probe checks if the container is running properly
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 3
+          
+        # Readiness probe checks if the container is ready to accept traffic
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5

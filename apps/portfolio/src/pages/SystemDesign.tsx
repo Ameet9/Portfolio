@@ -112,6 +112,18 @@ const caseStudies: CaseStudy[] = [
     concepts: ['Infrastructure as Code (IaC)', 'Terraform state', 'Idempotency', 'Configuration drift'],
     path: 'learning/system-design/terraform-localstack',
   },
+  {
+    id: 'k8s-self-healing',
+    title: 'Self-Healing Pods with Kubernetes',
+    date: 'Sept 14',
+    pattern: 'Container Orchestration',
+    problem: 'If a server crashes, who restarts it? If traffic spikes, who routes it? How do you maintain "desired state" across a distributed system?',
+    architecture: 'Kubernetes runs a continuous control loop (reconciliation loop). A Deployment object declares a desired state of 3 replicas. A Service object provides a stable load-balancing endpoint across the volatile pod IPs using label selectors.',
+    keyInsight: 'The core mechanic of Kubernetes is the reconciliation loop. It constantly compares "what is actually running" against "what you declared in YAML". When a pod is manually deleted, the loop sees Actual (2) < Desired (3) and immediately spins up a replacement to heal the system.',
+    stack: ['Kubernetes', 'Minikube', 'Docker', 'Python'],
+    concepts: ['Reconciliation loop', 'Deployments vs Pods', 'Services', 'Liveness/Readiness probes'],
+    path: 'learning/system-design/k8s-self-healing',
+  },
 ];
 
 const patternStyles: Record<string, string> = {
@@ -123,6 +135,7 @@ const patternStyles: Record<string, string> = {
   'Data Partitioning / Sharding': 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
   'Resilience / Fault Tolerance': 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
   'Infrastructure as Code': 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300',
+  'Container Orchestration': 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -195,6 +208,16 @@ const interviewTopics = [
       'What\'s the difference between `plan` and `apply`?',
       'What is "configuration drift" and how does IaC help catch it?',
       'How would you host a static site at global scale with low latency?',
+    ],
+  },
+  {
+    title: 'Container Orchestration',
+    questions: [
+      'What\'s the difference between a Pod and a Deployment in Kubernetes?',
+      'How does a Kubernetes Service load-balance traffic?',
+      'What happens internally when a pod crashes?',
+      'What\'s the difference between a ConfigMap and a Secret?',
+      'How would you achieve a zero-downtime deployment in Kubernetes?',
     ],
   },
 ];

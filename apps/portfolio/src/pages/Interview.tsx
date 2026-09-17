@@ -258,6 +258,20 @@ If the live API differs from your code, the \`plan\` output will flag it as a ch
     tags: ['Terraform', 'IaC', 'Configuration Drift', 'State Management'],
   },
 
+  {
+    id: 'sd-11',
+    category: 'System Design',
+    question: 'What happens internally in Kubernetes when a pod crashes?',
+    answer: `The core mechanic of Kubernetes is the **reconciliation loop** (or control loop).
+
+1. A controller (like a \`ReplicaSet\` backing a \`Deployment\`) continuously compares the **Desired State** (what you wrote in YAML, e.g., \`replicas: 3\`) against the **Actual State** (what is currently running).
+2. When a pod crashes or is deleted, the Actual State drops to 2.
+3. The controller sees this mismatch (\`2 < 3\`) and issues commands to the scheduler to spin up a replacement pod to close the gap.
+
+This is fundamentally different from a script that just runs a container once. The loop runs forever, constantly self-healing the cluster.`,
+    tags: ['Kubernetes', 'Orchestration', 'Self-Healing', 'Control Loop'],
+  },
+
   // ── React & Angular ───────────────────────────────────────────────────────
   {
     id: 'react-1',
@@ -391,6 +405,30 @@ This decouples the message broadcasting from the WebSocket server instances, mak
 
 **In production:** Use Redis Cluster for the pub/sub layer to avoid a single point of failure on the broadcast mechanism.`,
     tags: ['WebSockets', 'Redis Pub/Sub', 'Scaling', 'Real-time'],
+  },
+  {
+    id: 'react-10',
+    category: 'React & Angular',
+    question: 'Why must you clean up a WebSocket connection in a React useEffect return function?',
+    answer: `If you open a WebSocket connection inside a \`useEffect\` but don't close it in the cleanup return function, the connection stays alive even after the component unmounts.
+
+**Why this is a problem:**
+1. **Memory / Resource Leaks:** The browser keeps the socket open, consuming server resources.
+2. **Ghost Subscriptions:** If you remount the component (or navigate away and back), a *new* socket is opened. Now you have multiple active connections listening to events, leading to duplicate state updates and UI bugs.
+3. **React 18 Strict Mode:** React intentionally mounts, unmounts, and remounts components in development specifically to expose these exact missing-cleanup bugs.
+
+**The Fix:**
+\`\`\`ts
+useEffect(() => {
+  const ws = new WebSocket(url);
+  // ... setup ...
+  return () => {
+    ws.close();
+    // also clear any pending reconnect timeouts here!
+  };
+}, []);
+\`\`\``,
+    tags: ['React', 'useEffect', 'WebSockets', 'Memory Leaks'],
   },
 
   // ── DSA ──────────────────────────────────────────────────────────────────
@@ -573,6 +611,26 @@ This decouples the message broadcasting from the WebSocket server instances, mak
 
 **Why is it O(N) and not O(N*K)?** Although there's a \`while\` loop inside the \`for\` loop, each element is pushed into the deque at most once and popped at most once over the entire run. Therefore, the total number of deque operations is bounded by 2N, making the amortized time O(1) per element, or O(N) overall.`,
     tags: ['Sliding Window', 'Monotonic Deque', 'Amortized Analysis', 'O(N)'],
+  },
+  {
+    id: 'dsa-10',
+    category: 'DSA',
+    question: 'How do you reconstruct the actual sequence from an LCS DP table, and how does this relate to git diff?',
+    answer: `The Longest Common Subsequence (LCS) DP table \`dp[i][j]\` stores the *length* of the LCS up to index \`i\` in string A and \`j\` in string B.
+
+**To reconstruct the actual sequence:**
+Start at the bottom-right of the table (\`dp[m][n]\`) and backtrack:
+1. If \`A[i-1] == B[j-1]\`: The characters match! This character is part of the LCS. Move diagonally up-left to \`dp[i-1][j-1]\`.
+2. If they don't match: Look at the cell above (\`dp[i-1][j]\`) and the cell to the left (\`dp[i][j-1]\`). Move in the direction of the larger value (tracing the path that gave the maximum length).
+
+**Relation to git diff:**
+A diff tool compares *lines*, not characters. By running LCS on lines:
+- The matched lines (diagonal moves) are **unchanged** context.
+- Moving up (\`i-1\`) means a line existed in A but not in the LCS → it was **removed** (\`-\`).
+- Moving left (\`j-1\`) means a line existed in B but not in the LCS → it was **added** (\`+\`).
+
+*(Note: Real \`git diff\` uses Myers' algorithm for better performance and human-readable output, but it solves the exact same fundamental sequence-alignment problem).*`,
+    tags: ['Dynamic Programming', 'LCS', 'Backtracking', 'Git Diff'],
   },
 ];
 
