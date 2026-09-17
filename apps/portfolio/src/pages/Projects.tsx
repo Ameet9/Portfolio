@@ -252,6 +252,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Path compression', 'Union by rank', 'O(α(n))', 'Online algorithms'],
     path: 'learning/dsa/union-find',
   },
+  // Sept 16
+  {
+    id: 'circuit-breaker',
+    title: 'Circuit Breaker Pattern',
+    date: 'Sept 16',
+    category: 'System Design',
+    stack: ['Python', 'Flask'],
+    description: 'Full circuit breaker state machine (CLOSED → OPEN → HALF_OPEN → CLOSED) protecting against a flaky downstream service. Includes timeout handling and fail-fast behavior.',
+    concepts: ['Circuit breaker states', 'Cascading failure prevention', 'Fail-fast pattern', 'Timeout handling'],
+    path: 'learning/system-design/circuit-breaker',
+  },
+  {
+    id: 'jwt-expense-tracker',
+    title: 'JWT-Authenticated Expense Tracker',
+    date: 'Sept 16',
+    category: 'Python',
+    stack: ['Python', 'FastAPI', 'SQLAlchemy', 'JWT'],
+    description: 'Auth-protected CRUD API with signup/login, bcrypt password hashing, JWT tokens, and per-user expense scoping to prevent IDOR vulnerabilities.',
+    concepts: ['JWT stateless auth', 'bcrypt hashing', 'IDOR prevention', 'FastAPI Depends'],
+    path: 'learning/python/expense-tracker',
+  },
+  {
+    id: 'number-of-islands',
+    title: 'Number of Islands (Grid BFS/DFS)',
+    date: 'Sept 16',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'Classic grid traversal problem solved with both DFS (recursive sink) and BFS (deque). Includes a no-modify variant using a visited set and the flood-fill pattern family.',
+    concepts: ['DFS vs BFS', 'Grid traversal', 'Flood fill pattern', 'Visited-state tracking'],
+    path: 'learning/dsa/grid-traversal',
+  },
   // Sept 17
   {
     id: 'consistent-hashing',

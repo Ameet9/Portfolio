@@ -88,6 +88,18 @@ const caseStudies: CaseStudy[] = [
     concepts: ['Consistent hashing', 'Virtual nodes / replicas', 'bisect binary search', 'Blast radius minimization'],
     path: 'learning/system-design/consistent-hashing',
   },
+  {
+    id: 'circuit-breaker',
+    title: 'Circuit Breaker Pattern',
+    date: 'Sept 16',
+    pattern: 'Resilience / Fault Tolerance',
+    problem: 'What happens when a downstream service starts failing or hanging — how do you prevent it from taking down your entire system?',
+    architecture: 'Client → CircuitBreaker(state machine) → Flaky Service. Three states: CLOSED (pass through), OPEN (fail fast after threshold failures), HALF_OPEN (test one request after cooldown). Timeouts count as failures. State transitions are logged with timestamps.',
+    keyInsight: 'A circuit breaker is NOT a retry mechanism — retries assume the failure is transient and keep hammering (making things worse during real outages). A breaker stops trying altogether, giving the downstream service breathing room to recover. The HALF_OPEN state is the clever part: it tests recovery with exactly one request instead of immediately reopening the floodgates.',
+    stack: ['Python', 'Flask'],
+    concepts: ['CLOSED/OPEN/HALF_OPEN state machine', 'Fail-fast pattern', 'Cascading failure prevention', 'Timeout as failure'],
+    path: 'learning/system-design/circuit-breaker',
+  },
 ];
 
 const patternStyles: Record<string, string> = {
@@ -97,6 +109,7 @@ const patternStyles: Record<string, string> = {
   'Async Processing / Message Queue': 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
   'Serverless Architecture': 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
   'Data Partitioning / Sharding': 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
+  'Resilience / Fault Tolerance': 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -149,6 +162,16 @@ const interviewTopics = [
       'How would you handle a single hot key overwhelming one node?',
       'How does consistent hashing compare to rendezvous (HRW) hashing?',
       'Name real systems that use consistent hashing.',
+    ],
+  },
+  {
+    title: 'Circuit Breaker & Resilience',
+    questions: [
+      'What is a circuit breaker and why would you use one?',
+      'How is a circuit breaker different from a retry mechanism?',
+      'How would you decide the failure threshold and cooldown period?',
+      'What happens to requests when the circuit is OPEN?',
+      'Where have you seen this pattern used in real systems?',
     ],
   },
 ];

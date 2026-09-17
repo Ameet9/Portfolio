@@ -217,6 +217,30 @@ Kafka is fundamentally log-based pub-sub: all consumers can read all messages, e
     tags: ['Consistent Hashing', 'Virtual Nodes', 'Distributed Cache', 'Sharding'],
   },
 
+  {
+    id: 'sd-8',
+    category: 'System Design',
+    question: 'How is a circuit breaker different from a retry mechanism?',
+    answer: `**Retries** assume a failure is transient (e.g., a network blip). They keep trying. But if the downstream service is genuinely overloaded, retrying makes things *worse* by hammering an already-struggling system, causing cascading failures.
+
+A **Circuit Breaker** detects when a service is genuinely struggling (by tracking the failure rate) and **stops trying completely** for a cooldown period (the OPEN state). It fails fast so the caller doesn't waste threads/connections waiting on timeouts.
+
+Once the cooldown expires, it enters a **HALF_OPEN** state, letting exactly *one* request through to test if the service has recovered. If yes, it closes the circuit. If no, it trips open again.`,
+    tags: ['Circuit Breaker', 'Resilience', 'Fail Fast', 'Cascading Failures'],
+  },
+  {
+    id: 'sd-9',
+    category: 'System Design',
+    question: 'What is IDOR and how do you prevent it in a REST API?',
+    answer: `**IDOR (Insecure Direct Object Reference)** is an authorization vulnerability where an API relies solely on a user-provided ID to access a resource without checking if the user actually owns that resource.
+
+For example, if User A calls \`DELETE /expenses/42\`, and the backend just runs \`DELETE FROM expenses WHERE id=42\`, User A just deleted User B's expense.
+
+**Prevention:** Never trust the client ID alone. Always combine it with the authenticated session context (e.g., from a JWT). The safe query looks like:
+\`DELETE FROM expenses WHERE id=42 AND user_id = <current_user_id_from_token>\`.`,
+    tags: ['Security', 'IDOR', 'Authorization', 'OWASP'],
+  },
+
   // ── React & Angular ───────────────────────────────────────────────────────
   {
     id: 'react-1',
@@ -484,6 +508,23 @@ This decouples the message broadcasting from the WebSocket server instances, mak
 
 **Time complexity:** O((V + E) log V) with a binary heap. O(V²) with a plain array scan — actually faster on very dense graphs where E ≈ V².`,
     tags: ['Dijkstra', 'Shortest Path', 'Min-Heap', 'Greedy Invariant'],
+  },
+  {
+    id: 'dsa-8',
+    category: 'DSA',
+    question: 'How do you solve the "Number of Islands" problem and what are the trade-offs between DFS and BFS?',
+    answer: `The problem asks to count connected components of \`1\`s (land) in a 2D grid.
+
+**Algorithm:** Iterate over every cell in the grid. Whenever you find an unvisited \`1\`, you've found a new island (increment counter). Then, use a traversal (BFS or DFS) to "sink" the entire island (mark all connected \`1\`s as visited or flip them to \`0\`) so they aren't double-counted later.
+
+**DFS vs BFS Trade-offs:**
+- **DFS (Recursive):** Much less code. However, the call stack grows up to O(rows × cols) in the worst case (a grid that is entirely land). On very large grids, this causes a Stack Overflow.
+- **BFS (Iterative with Queue):** Slightly more boilerplate. Uses an explicit queue (\`collections.deque\`) which lives on the heap, completely avoiding the Stack Overflow risk, though it still takes O(rows × cols) memory worst-case.
+
+**Time/Space:** O(rows × cols) time (each cell visited a constant number of times) and O(rows × cols) space worst-case.
+
+**Other problems in this pattern:** Flood Fill, Rotting Oranges (multi-source BFS), Surrounded Regions, Max Area of Island.`,
+    tags: ['Graph Traversal', 'BFS', 'DFS', 'Flood Fill', '2D Grid'],
   },
 ];
 
