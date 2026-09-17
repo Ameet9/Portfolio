@@ -272,6 +272,18 @@ This is fundamentally different from a script that just runs a container once. T
     tags: ['Kubernetes', 'Orchestration', 'Self-Healing', 'Control Loop'],
   },
 
+  {
+    id: 'sd-12',
+    category: 'System Design',
+    question: 'Why use a separate message queue (like RabbitMQ) instead of a background thread in the API process?',
+    answer: `While a background thread in the API server is easier to write, it fails in production for three reasons:
+
+1. **Lost Work:** If the API process crashes, is restarted, or scales down during a deploy, all background threads die and the work is lost forever. Queues persist messages to disk.
+2. **Backpressure & Scaling:** If the background task is slow (e.g., generating a PDF), 1,000 incoming requests will overwhelm the API server's CPU/memory, taking down the entire web server. With a queue, the API server stays fast, and you can independently scale the consumers (workers) to churn through the backlog.
+3. **Failures & Retries:** Queues natively support dead-lettering (moving persistently failing messages to a DLQ for manual inspection) instead of throwing exceptions into the void.`,
+    tags: ['Message Queues', 'RabbitMQ', 'Decoupling', 'Background Tasks'],
+  },
+
   // ── React & Angular ───────────────────────────────────────────────────────
   {
     id: 'react-1',
@@ -429,6 +441,18 @@ useEffect(() => {
 }, []);
 \`\`\``,
     tags: ['React', 'useEffect', 'WebSockets', 'Memory Leaks'],
+  },
+  {
+    id: 'react-11',
+    category: 'React & Angular',
+    question: 'Why normalize state in a frontend store (like Pinia/Redux) instead of nesting objects?',
+    answer: `Normalization means storing entities in a flat dictionary by ID (e.g., \`cards: { 'c1': {...} }\`), and using arrays of IDs to represent relationships (e.g., \`column.cardIds = ['c1', 'c2']\`).
+
+**Why this is better than nesting (\`column.cards = [{...}]\`):**
+1. **O(1) Updates:** If you need to edit Card C1, you just update \`state.cards['c1']\`. With nested state, you have to deep-search through all columns to find it.
+2. **Moving items is cheap:** In a drag-and-drop board, moving a card between columns just means splicing the ID string out of one array and into another. No deep object manipulation.
+3. **No duplicate data:** If a user or label belongs to multiple cards, normalization ensures there is only one source of truth. If you update the label color, it instantly updates everywhere.`,
+    tags: ['State Management', 'Pinia', 'Redux', 'Normalization'],
   },
 
   // ── DSA ──────────────────────────────────────────────────────────────────
@@ -631,6 +655,22 @@ A diff tool compares *lines*, not characters. By running LCS on lines:
 
 *(Note: Real \`git diff\` uses Myers' algorithm for better performance and human-readable output, but it solves the exact same fundamental sequence-alignment problem).*`,
     tags: ['Dynamic Programming', 'LCS', 'Backtracking', 'Git Diff'],
+  },
+  {
+    id: 'dsa-11',
+    category: 'DSA',
+    question: 'Why do we need both Path Compression AND Union by Rank in a Disjoint Set (Union-Find)?',
+    answer: `Union-Find is used for fast connectivity queries (e.g. "are these two nodes in the same network?").
+
+The basic implementation of finding a root can degenerate into a linked list O(N) if we get an unlucky sequence of merges. We fix this with two optimizations:
+
+1. **Path Compression (flattens during \`find\`):** Every time we walk up the tree to find the root, we re-point all nodes along the path directly to the root. This keeps the tree flat *after* a lookup.
+2. **Union by Rank (balances during \`union\`):** When merging two groups, we always attach the smaller tree under the root of the bigger tree. This keeps the tree shallow *from the start*.
+
+**Why both?** Path compression only fixes the tree when you call \`find\`. If you do N \`union\` operations before doing any \`find\`, you could still build an O(N) chain and blow up the stack on the first \`find\`. Union by rank prevents the chain from ever forming in the first place.
+
+Together, they guarantee that operations run in **O(α(N)) amortized time**, where α is the inverse Ackermann function (which is ≤ 5 for any number in the observable universe, making it effectively O(1)).`,
+    tags: ['Union-Find', 'Disjoint Set', 'Path Compression', 'Amortized O(1)'],
   },
 ];
 

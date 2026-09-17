@@ -124,6 +124,18 @@ const caseStudies: CaseStudy[] = [
     concepts: ['Reconciliation loop', 'Deployments vs Pods', 'Services', 'Liveness/Readiness probes'],
     path: 'learning/system-design/k8s-self-healing',
   },
+  {
+    id: 'rabbitmq-order-pipeline',
+    title: 'Order Pipeline with a Message Queue (RabbitMQ)',
+    date: 'Sept 13',
+    pattern: 'Async Processing / Message Queue',
+    problem: 'How do you design a system that handles spikes in traffic without falling over, especially when downstream tasks (like payment or email) are slow?',
+    architecture: 'A FastAPI Producer accepts orders and instantly returns 202 Accepted while publishing the order to a RabbitMQ exchange. A separate Worker process consumes the queue, executing the slow tasks asynchronously. Dead-letter queues handle persistent failures.',
+    keyInsight: 'The producer\'s job is to accept work fast, not do the work. Decoupling via a queue means you can scale the consumers horizontally to churn through a backlog without changing the API, and a crash in the worker doesn\'t drop the user\'s request.',
+    stack: ['Python', 'FastAPI', 'RabbitMQ', 'Docker'],
+    concepts: ['Producer-consumer decoupling', 'Dead-letter queues', 'Horizontal worker scaling', 'Manual acknowledgments'],
+    path: 'learning/system-design/order-pipeline',
+  },
 ];
 
 const patternStyles: Record<string, string> = {
@@ -218,6 +230,16 @@ const interviewTopics = [
       'What happens internally when a pod crashes?',
       'What\'s the difference between a ConfigMap and a Secret?',
       'How would you achieve a zero-downtime deployment in Kubernetes?',
+    ],
+  },
+  {
+    title: 'Async Processing & Message Queues',
+    questions: [
+      'How would you design a system where a user action triggers a slow downstream process?',
+      'What\'s the difference between a message queue and a pub-sub system?',
+      'How do you handle a message that keeps failing to process?',
+      'How would you scale this system if order volume grew 100x?',
+      'Why not just use a background thread in your API process instead of a separate queue?',
     ],
   },
 ];

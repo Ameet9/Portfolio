@@ -17,13 +17,13 @@ const highlights = [
     title: 'System Design',
     description: 'Architecture case studies with code and trade-offs',
     path: '/system-design',
-    count: '8',
+    count: '9',
   },
   {
     title: 'Interview Prep',
     description: 'Senior-level Q&A extracted from actual project work',
     path: '/interview',
-    count: '30',
+    count: '33',
   },
 ];
 
