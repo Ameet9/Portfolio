@@ -1,0 +1,67 @@
+<div class="container">
+  <header>
+    <h1>Angular Signals Cart</h1>
+  </header>
+
+  <div class="content">
+    <div class="products">
+      <h2>Products</h2>
+      <div class="product-list">
+        <div class="product-card" *ngFor="let product of availableProducts">
+          <h3>{{ product.name }}</h3>
+          <p>{{ product.price | currency }}</p>
+          <button (click)="addToCart(product)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart">
+      <h2>Your Cart</h2>
+      
+      <div *ngIf="cartService.cartItems().length === 0" class="empty-cart">
+        Your cart is empty.
+      </div>
+
+      <div *ngIf="cartService.cartItems().length > 0">
+        <div class="cart-item" *ngFor="let item of cartService.cartItems()">
+          <div class="item-info">
+            <h4>{{ item.name }}</h4>
+            <p>{{ item.price | currency }} x </p>
+            <input type="number" [value]="item.quantity" (change)="updateQuantity(item.id, $event)" min="1" class="qty-input">
+          </div>
+          <div class="item-total">
+            {{ item.price * item.quantity | currency }}
+          </div>
+          <button class="remove-btn" (click)="removeFromCart(item.id)">Remove</button>
+        </div>
+
+        <div class="summary">
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span>{{ cartService.subtotal() | currency }}</span>
+          </div>
+          
+          <div class="summary-row">
+            <span>Tax (10%):</span>
+            <span>{{ cartService.tax() | currency }}</span>
+          </div>
+
+          <div class="discount-section">
+            <input type="text" [(ngModel)]="discountInput" placeholder="Discount Code (e.g. SAVE10)">
+            <button (click)="applyDiscount()">Apply</button>
+          </div>
+
+          <div class="summary-row discount" *ngIf="cartService.discountAmount() > 0">
+            <span>Discount ({{ cartService.discountCode() }}):</span>
+            <span>-{{ cartService.discountAmount() | currency }}</span>
+          </div>
+          
+          <div class="summary-row total">
+            <span>Total:</span>
+            <span>{{ cartService.total() | currency }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

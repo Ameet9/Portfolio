@@ -252,6 +252,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Path compression', 'Union by rank', 'O(α(n))', 'Online algorithms'],
     path: 'learning/dsa/union-find',
   },
+  // Sept 15
+  {
+    id: 'terraform-localstack',
+    title: 'Terraform-in-a-Box (S3 Static Site)',
+    date: 'Sept 15',
+    category: 'System Design',
+    stack: ['Terraform', 'LocalStack', 'AWS', 'Docker'],
+    description: 'Infrastructure as Code deployment of a public S3 static website using LocalStack. Demonstrates state file mechanics, configuration drift, and the init/plan/apply/destroy lifecycle locally without cloud costs.',
+    concepts: ['Infrastructure as Code (IaC)', 'Terraform state', 'Idempotency', 'LocalStack fake AWS'],
+    path: 'learning/system-design/terraform-localstack',
+  },
+  {
+    id: 'angular-signals-cart',
+    title: 'Signals-Powered Shopping Cart',
+    date: 'Sept 15',
+    category: 'Angular',
+    stack: ['Angular 18', 'TypeScript'],
+    description: 'A reactive shopping cart built entirely with Angular Signals (no RxJS). Demonstrates signal() for mutable state, computed() for derived totals/discounts, and effect() for syncing to localStorage.',
+    concepts: ['Angular Signals', 'computed vs effect', 'Standalone components', 'Fine-grained reactivity'],
+    path: 'learning/angular/signals-cart',
+  },
+  {
+    id: 'monotonic-deque',
+    title: 'Real-Time Price Tracker (Monotonic Deque)',
+    date: 'Sept 15',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'Streaming metric tracker that calculates sliding window maximums in amortized O(1) time per tick using a monotonic deque, avoiding the O(n*k) naive rescan.',
+    concepts: ['Monotonic deque', 'Sliding window max', 'Amortized O(1)', 'Streaming algorithms'],
+    path: 'learning/dsa/sliding-window-max',
+  },
   // Sept 16
   {
     id: 'circuit-breaker',

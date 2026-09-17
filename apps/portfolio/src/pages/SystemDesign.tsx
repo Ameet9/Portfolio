@@ -100,6 +100,18 @@ const caseStudies: CaseStudy[] = [
     concepts: ['CLOSED/OPEN/HALF_OPEN state machine', 'Fail-fast pattern', 'Cascading failure prevention', 'Timeout as failure'],
     path: 'learning/system-design/circuit-breaker',
   },
+  {
+    id: 'terraform-localstack',
+    title: 'Terraform-in-a-Box (LocalStack)',
+    date: 'Sept 15',
+    pattern: 'Infrastructure as Code',
+    problem: 'How do you reliably provision and manage cloud infrastructure across a team without clicking around manually in the AWS console?',
+    architecture: 'Terraform CLI reads main.tf declarative configs and translates them into AWS API calls. LocalStack acts as a drop-in replacement for AWS running locally in Docker, letting us test the whole lifecycle (init → plan → apply → destroy) safely and for free.',
+    keyInsight: 'The real magic of IaC is the state file and idempotency. Running `terraform plan` compares the code to the state file to generate a diff before touching real infrastructure. This allows infrastructure changes to go through the exact same PR review process as application code.',
+    stack: ['Terraform', 'LocalStack', 'AWS S3', 'Docker'],
+    concepts: ['Infrastructure as Code (IaC)', 'Terraform state', 'Idempotency', 'Configuration drift'],
+    path: 'learning/system-design/terraform-localstack',
+  },
 ];
 
 const patternStyles: Record<string, string> = {
@@ -110,6 +122,7 @@ const patternStyles: Record<string, string> = {
   'Serverless Architecture': 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
   'Data Partitioning / Sharding': 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
   'Resilience / Fault Tolerance': 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  'Infrastructure as Code': 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -172,6 +185,16 @@ const interviewTopics = [
       'How would you decide the failure threshold and cooldown period?',
       'What happens to requests when the circuit is OPEN?',
       'Where have you seen this pattern used in real systems?',
+    ],
+  },
+  {
+    title: 'Infrastructure as Code (IaC)',
+    questions: [
+      'What is Infrastructure as Code and why do teams prefer it over manual console changes?',
+      'What is Terraform state, and why does it matter for a team?',
+      'What\'s the difference between `plan` and `apply`?',
+      'What is "configuration drift" and how does IaC help catch it?',
+      'How would you host a static site at global scale with low latency?',
     ],
   },
 ];

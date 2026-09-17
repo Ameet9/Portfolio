@@ -241,6 +241,23 @@ For example, if User A calls \`DELETE /expenses/42\`, and the backend just runs 
     tags: ['Security', 'IDOR', 'Authorization', 'OWASP'],
   },
 
+  {
+    id: 'sd-10',
+    category: 'System Design',
+    question: 'What is "configuration drift" and how does Infrastructure as Code (IaC) catch it?',
+    answer: `**Configuration drift** happens when real-world infrastructure changes independently of your source code (e.g., an engineer manually clicking a checkbox in the AWS console to fix a fire, but forgetting to update the Terraform code).
+
+This is dangerous because the source of truth is lost, and the next automated deployment might overwrite the manual fix, causing an outage.
+
+**How IaC catches it:** Tools like Terraform maintain a **state file** that maps your code to real resources. When you run \`terraform plan\`, it compares:
+1. What you want (your \`.tf\` code)
+2. What Terraform last knew about (state file)
+3. What actually exists right now (live AWS API)
+
+If the live API differs from your code, the \`plan\` output will flag it as a change waiting to happen. Running \`plan\` continuously in CI acts as a drift-detection alarm.`,
+    tags: ['Terraform', 'IaC', 'Configuration Drift', 'State Management'],
+  },
+
   // ── React & Angular ───────────────────────────────────────────────────────
   {
     id: 'react-1',
@@ -490,6 +507,19 @@ This decouples the message broadcasting from the WebSocket server instances, mak
     tags: ['Vue 3', 'Teleport', 'Modals', 'Accessibility'],
   },
   {
+    id: 'react-9',
+    category: 'React & Angular',
+    question: 'What problem do Angular Signals solve compared to Zone.js and RxJS?',
+    answer: `**Zone.js issue:** Zone.js monkey-patches browser APIs (like \`setTimeout\` and DOM events) to trigger change detection across the *entire* component tree whenever anything happens. This is wasteful.
+
+**RxJS issue:** RxJS is built for complex asynchronous streams, but using it for simple synchronous state (like a shopping cart total) requires heavy boilerplate (\`BehaviorSubject\`, \`combineLatest\`, \`| async\`).
+
+**Signals solve both:**
+1. **Fine-grained reactivity:** A signal tells Angular exactly what changed and where it's used, allowing Angular to update *only* that specific part of the DOM, skipping the rest of the component tree entirely.
+2. **Synchronous simplicity:** Signals provide a much simpler API (\`signal()\`, \`computed()\`, \`effect()\`) for state that doesn't involve complex async events.`,
+    tags: ['Angular 18', 'Signals', 'Zone.js', 'Reactivity'],
+  },
+  {
     id: 'dsa-7',
     category: 'DSA',
     question: "Walk me through Dijkstra's algorithm and why it doesn't work with negative edges.",
@@ -525,6 +555,24 @@ This decouples the message broadcasting from the WebSocket server instances, mak
 
 **Other problems in this pattern:** Flood Fill, Rotting Oranges (multi-source BFS), Surrounded Regions, Max Area of Island.`,
     tags: ['Graph Traversal', 'BFS', 'DFS', 'Flood Fill', '2D Grid'],
+  },
+  {
+    id: 'dsa-9',
+    category: 'DSA',
+    question: 'How do you find the sliding window maximum in O(N) time instead of O(N*K)?',
+    answer: `The naive approach (scanning the window of size K for every step) takes O(N*K) time, which is too slow for large windows.
+
+**The O(N) solution uses a Monotonic Deque (Double-Ended Queue):**
+1. We store **indices** in the deque (so we know when they fall out of the window).
+2. We maintain a strictly decreasing invariant: the values corresponding to the indices in the deque are always strictly decreasing.
+3. For each new element:
+   - Pop elements from the **back** of the deque if they are smaller than the new element (they are useless because the new element is both larger and more recent, so the older ones can never be the max again).
+   - Push the new element's index to the **back**.
+   - Pop the **front** of the deque if its index has fallen out of the current sliding window.
+4. The **front** of the deque is always the maximum for the current window.
+
+**Why is it O(N) and not O(N*K)?** Although there's a \`while\` loop inside the \`for\` loop, each element is pushed into the deque at most once and popped at most once over the entire run. Therefore, the total number of deque operations is bounded by 2N, making the amortized time O(1) per element, or O(N) overall.`,
+    tags: ['Sliding Window', 'Monotonic Deque', 'Amortized Analysis', 'O(N)'],
   },
 ];
 
