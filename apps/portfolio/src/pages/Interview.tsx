@@ -283,6 +283,18 @@ This is fundamentally different from a script that just runs a container once. T
 3. **Failures & Retries:** Queues natively support dead-lettering (moving persistently failing messages to a DLQ for manual inspection) instead of throwing exceptions into the void.`,
     tags: ['Message Queues', 'RabbitMQ', 'Decoupling', 'Background Tasks'],
   },
+  {
+    id: 'sd-13',
+    category: 'System Design',
+    question: 'Why do we need virtual nodes in consistent hashing?',
+    answer: `Without virtual nodes, a small number of real servers will land at random points on the hash ring, leading to highly uneven arc lengths between them. This means some servers will receive a massive share of the keys while others sit idle.
+
+**The Fix:** Give each physical server multiple "virtual" positions on the ring (e.g., 100 replicas named \`serverA-0\` to \`serverA-99\`).
+This smooths out the distribution statistically, similar to how flipping a coin 100 times gets you closer to a 50/50 split than flipping it 3 times.
+
+Virtual nodes also make **heterogeneous clusters** easy: if Server B has twice the RAM of Server A, just give it 200 virtual nodes instead of 100.`,
+    tags: ['Consistent Hashing', 'Virtual Nodes', 'Load Balancing', 'Distributed Systems'],
+  },
 
   // ── React & Angular ───────────────────────────────────────────────────────
   {
@@ -453,6 +465,22 @@ useEffect(() => {
 2. **Moving items is cheap:** In a drag-and-drop board, moving a card between columns just means splicing the ID string out of one array and into another. No deep object manipulation.
 3. **No duplicate data:** If a user or label belongs to multiple cards, normalization ensures there is only one source of truth. If you update the label color, it instantly updates everywhere.`,
     tags: ['State Management', 'Pinia', 'Redux', 'Normalization'],
+  },
+  {
+    id: 'react-12',
+    category: 'React & Angular',
+    question: 'How do you efficiently render a list of 100,000 items without freezing the browser?',
+    answer: `By using **DOM Virtualization** (also called windowing). Instead of rendering 100,000 DOM nodes (which crashes the browser), you only render the ~20 items that fit on the user's screen.
+
+**How it works:**
+1. Create an outer scrollable container with a fixed height.
+2. Inside it, create a "phantom" inner div whose height is set to \`totalItems * itemHeight\`. This tricks the browser into showing a proportionally correct scrollbar.
+3. Listen to the \`scroll\` event to track \`scrollTop\`.
+4. Calculate which items are visible: \`startIndex = Math.floor(scrollTop / itemHeight)\`.
+5. Slice the array of data to only render those items, and absolutely position each one at \`top: index * itemHeight\`.
+
+As the user scrolls, the array slice changes, but the total number of DOM nodes stays constant (e.g. 20).`,
+    tags: ['Vue', 'React', 'Virtual Scroll', 'Performance'],
   },
 
   // ── DSA ──────────────────────────────────────────────────────────────────
@@ -671,6 +699,25 @@ The basic implementation of finding a root can degenerate into a linked list O(N
 
 Together, they guarantee that operations run in **O(α(N)) amortized time**, where α is the inverse Ackermann function (which is ≤ 5 for any number in the observable universe, making it effectively O(1)).`,
     tags: ['Union-Find', 'Disjoint Set', 'Path Compression', 'Amortized O(1)'],
+  },
+  {
+    id: 'dsa-12',
+    category: 'DSA',
+    question: 'How do you design an LFU (Least Frequently Used) Cache in O(1) time?',
+    answer: `Unlike LRU which only tracks recency, LFU must track both frequency *and* recency (as a tie-breaker). A single hashmap isn't enough.
+
+**The O(1) Solution requires three HashMaps:**
+1. \`key_to_val\`: Maps key → value.
+2. \`key_to_freq\`: Maps key → current frequency.
+3. \`freq_to_keys\`: Maps frequency → an \`OrderedDict\` of keys that currently have this frequency.
+*(We also maintain a \`min_freq\` integer to instantly know which frequency bucket to evict from).*
+
+**Why OrderedDict for \`freq_to_keys\`?**
+When multiple keys have the same lowest frequency, we must evict the *least recently used* among them. An \`OrderedDict\` gives us O(1) removal of specific keys (when they are promoted to a higher frequency bucket) AND O(1) popping of the oldest key (for eviction tie-breaking).
+
+**On \`get(key)\` or \`put(key, value)\`:**
+We look up the key's current frequency, delete it from \`freq_to_keys[old_freq]\`, and insert it into \`freq_to_keys[new_freq]\`. If the old bucket becomes empty and it was the \`min_freq\`, we increment \`min_freq\`. No scanning or sorting is ever required.`,
+    tags: ['LFU Cache', 'OrderedDict', 'O(1) Design', 'Multiple HashMaps'],
   },
 ];
 

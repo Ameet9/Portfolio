@@ -346,16 +346,7 @@ const dailyProjects: DailyProject[] = [
     path: 'learning/dsa/grid-traversal',
   },
   // Sept 17
-  {
-    id: 'consistent-hashing',
-    title: 'Consistent Hashing Ring',
-    date: 'Sept 17',
-    category: 'System Design',
-    stack: ['Python'],
-    description: 'Working consistent-hashing ring with virtual nodes (replicas) for even key distribution. Proves naive modulo remaps ~80% of keys while the ring remaps only ~1/N on topology changes.',
-    concepts: ['Consistent hashing', 'Virtual nodes', 'bisect O(log N)', 'Blast radius minimization'],
-    path: 'learning/system-design/consistent-hashing',
-  },
+  // Sept 17
   {
     id: 'vue-command-palette',
     title: 'Command Palette (Cmd+K)',
@@ -375,6 +366,37 @@ const dailyProjects: DailyProject[] = [
     description: 'Dijkstra\'s shortest-path algorithm with heapq min-heap on a realistic 8-city flight network. Includes path reconstruction and the "Cheapest Flights Within K Stops" LeetCode variant.',
     concepts: ['Dijkstra\'s algorithm', 'Min-heap / heapq', 'Path reconstruction', 'K-stops variant'],
     path: 'learning/dsa/dijkstra',
+  },
+  // Sept 18
+  {
+    id: 'consistent-hashing',
+    title: 'Consistent Hashing Simulator (FastAPI)',
+    date: 'Sept 18',
+    category: 'System Design',
+    stack: ['Python', 'FastAPI'],
+    description: 'Working consistent hashing ring with virtual nodes (replicas) exposed via a REST API to demonstrate scale out/in without massive cache stampedes.',
+    concepts: ['Consistent hashing', 'Virtual nodes', 'bisect', 'Cache stampede prevention'],
+    path: 'learning/system-design/consistent-hashing',
+  },
+  {
+    id: 'vue-virtual-scroll',
+    title: 'Virtual Scroll List (10,000+ Items)',
+    date: 'Sept 18',
+    category: 'Vue',
+    stack: ['Vue 3', 'Vite'],
+    description: 'High-performance virtualized list rendering 10,000 items without lag by maintaining a fixed DOM node count (~20) and tracking scroll offsets.',
+    concepts: ['DOM virtualization', 'computed efficiency', 'Scroll interception', 'Performance profiling'],
+    path: 'learning/vue/virtual-scroll',
+  },
+  {
+    id: 'lfu-cache',
+    title: 'LFU (Least Frequently Used) Cache',
+    date: 'Sept 18',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'Amortized O(1) LFU cache built using three parallel hash maps and OrderedDict to achieve eviction of the least frequently (and then least recently) used keys.',
+    concepts: ['O(1) lookups', 'OrderedDict tie-breaks', 'Multi-map architecture', 'Frequency bumping'],
+    path: 'learning/dsa/lfu-cache',
   },
 ];
 

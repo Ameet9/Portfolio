@@ -136,6 +136,18 @@ const caseStudies: CaseStudy[] = [
     concepts: ['Producer-consumer decoupling', 'Dead-letter queues', 'Horizontal worker scaling', 'Manual acknowledgments'],
     path: 'learning/system-design/order-pipeline',
   },
+  {
+    id: 'consistent-hashing',
+    title: 'Consistent Hashing Ring Simulator',
+    date: 'Sept 18',
+    pattern: 'Data Partitioning / Sharding',
+    problem: 'If you have N cache servers and assign keys using hash(key) % N, what happens when a new server is added (N+1)? Nearly 100% of keys are remapped to new servers, causing a massive cache stampede.',
+    architecture: 'Both servers and keys are hashed onto a circular number line (ring). A key is assigned to the first server it encounters moving clockwise. When a server is added or removed, only its immediate neighbors are affected.',
+    keyInsight: 'Virtual nodes (replicas) solve the uneven distribution problem. By assigning each physical server 100+ virtual positions on the ring, the load balances statistically without complex coordination.',
+    stack: ['Python', 'FastAPI'],
+    concepts: ['Consistent Hashing', 'Virtual Nodes', 'bisect', 'Cache Stampede Prevention'],
+    path: 'learning/system-design/consistent-hashing',
+  },
 ];
 
 const patternStyles: Record<string, string> = {
@@ -240,6 +252,16 @@ const interviewTopics = [
       'How do you handle a message that keeps failing to process?',
       'How would you scale this system if order volume grew 100x?',
       'Why not just use a background thread in your API process instead of a separate queue?',
+    ],
+  },
+  {
+    title: 'Data Partitioning & Sharding',
+    questions: [
+      'How would you design a distributed cache that can scale horizontally?',
+      'What\'s the problem with hash(key) % N for sharding?',
+      'Why do we need virtual nodes in consistent hashing?',
+      'How does consistent hashing help with a hot key or hot server problem?',
+      'Where have you seen consistent hashing used in real systems?',
     ],
   },
 ];

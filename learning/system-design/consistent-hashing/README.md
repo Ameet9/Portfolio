@@ -36,17 +36,37 @@ A raw consistent hashing ring can result in highly uneven data distribution if p
 
 ## How to Run
 
-Requirements: Python 3.9+ (Built-in libraries only). Testing requires `pytest`.
+Requirements: Python 3.9+ (Built-in libraries only for the scripts). Testing requires `pytest`. FastAPI server requires `fastapi` and `uvicorn`.
 
 ```powershell
-# 1. Run the Naive Modulo demonstration to see the problem
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Run the Naive Modulo demonstration to see the problem
 python naive_modulo.py
 
-# 2. Run the Consistent Hashing demo to see the solution
+# 3. Run the Consistent Hashing demo to see the solution
 python demo.py
 
-# 3. Run the unit tests (assuming pytest is installed)
+# 4. Run the unit tests (assuming pytest is installed)
 pytest test_consistent_hash.py -v
+
+# 5. Run the FastAPI Server
+uvicorn server:app --reload
+
+# Testing the FastAPI server with curl (Stretch Goal):
+# Add servers to the ring
+curl -X POST http://127.0.0.1:8000/servers/ServerA
+curl -X POST http://127.0.0.1:8000/servers/ServerB
+
+# Get the server for a specific key
+curl http://127.0.0.1:8000/keys/my_user_id_123
+
+# Remove a server
+curl -X DELETE http://127.0.0.1:8000/servers/ServerA
+
+# Check the key again (should now map to a different server)
+curl http://127.0.0.1:8000/keys/my_user_id_123
 ```
 
 ## Interview Q&A
