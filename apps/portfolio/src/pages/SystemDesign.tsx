@@ -160,6 +160,18 @@ const caseStudies: CaseStudy[] = [
     concepts: ['Distributed Locking', 'Race Conditions', 'SET NX PX', 'Lua Script Atomicity', 'Redlock Algorithm'],
     path: 'learning/system-design/distributed-locking',
   },
+  {
+    id: 'blue-green-deploy',
+    title: 'Blue-Green Deployment Simulator',
+    date: 'Sept 20',
+    pattern: 'Deployment Strategy',
+    problem: 'How do you deploy a new version of your application without dropping any active user requests or causing downtime?',
+    architecture: 'Two identical container environments ("blue" and "green") run side-by-side. An Nginx reverse proxy routes 100% of traffic to the active environment. To deploy, you start the new version in the idle environment, run health checks, and then execute a graceful Nginx reload to instantly switch the traffic routing.',
+    keyInsight: 'The key is "nginx -s reload", which achieves zero downtime. The master process reads the new config and spawns new workers to handle incoming requests, while existing workers finish their in-flight requests and gracefully shut down.',
+    stack: ['Docker Compose', 'Nginx', 'Python'],
+    concepts: ['Zero-Downtime', 'Reverse Proxy', 'Graceful Reload', 'Canary vs Blue-Green', 'Expand-Contract DB Pattern'],
+    path: 'learning/system-design/blue-green',
+  },
 ];
 
 const patternStyles: Record<string, string> = {
@@ -284,6 +296,16 @@ const interviewTopics = [
       'Why check a token before deleting the lock key in Redis instead of just deleting it?',
       'What is the Redlock algorithm and why use multiple Redis nodes?',
       'What alternatives exist to Redis for distributed locking, and what are their trade-offs?',
+    ],
+  },
+  {
+    title: 'Deployment Strategy',
+    questions: [
+      'What\'s the difference between blue-green and canary deployments?',
+      'How do you handle database schema changes during a blue-green deploy?',
+      'How does Nginx achieve a zero-downtime reload?',
+      'What metrics would you watch to decide if a deploy is safe?',
+      'How would this scale beyond one server?',
     ],
   },
 ];

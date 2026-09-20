@@ -309,6 +309,18 @@ If that happens:
 If you just run \`DEL\`, you will delete **Process B's lock**, leaving the resource unprotected. By checking that the value matches your unique token (usually via a Lua script for atomicity) before deleting, you ensure you only release a lock that you still own.`,
     tags: ['Distributed Locking', 'Redis', 'Race Conditions', 'Atomicity'],
   },
+  {
+    id: 'sd-15',
+    category: 'System Design',
+    question: 'What\'s the difference between blue-green and canary deployments?',
+    answer: `Both achieve zero-downtime deployments, but their risk profiles differ:
+
+- **Blue-Green** is an instant, 100% traffic cutover between two fully provisioned, parallel environments. If something goes wrong, you instantly rollback (switch back to blue).
+- **Canary** shifts a small percentage of traffic (e.g., 5%) to the new version while monitoring for errors or latency spikes. If it's stable, you slowly ramp up to 100%.
+
+Canary minimizes the "blast radius" of a bad release since only 5% of users see it, but deployments take much longer. Blue-Green is fast but affects 100% of users immediately if there's a bug.`,
+    tags: ['Deployments', 'Blue-Green', 'Canary', 'CI/CD'],
+  },
 
   // ── React & Angular ───────────────────────────────────────────────────────
   {
@@ -505,6 +517,20 @@ As the user scrolls, the array slice changes, but the total number of DOM nodes 
 For example, in an undo/redo system (the Memento pattern), you have three intertwined states: \`past\`, \`present\`, and \`future\`. 
 When you undo, you must pop from \`past\`, overwrite \`present\`, and push to \`future\` simultaneously. Doing this with three separate \`useState\` setters inside a click handler gets tangled fast. \`useReducer\` centralizes this logic into a single, testable, atomic transition.`,
     tags: ['React', 'useReducer', 'State Management', 'Design Patterns'],
+  },
+  {
+    id: 'react-14',
+    category: 'React & Angular',
+    question: 'Reactive Forms vs. Template-driven forms in Angular — what\'s the real difference?',
+    answer: `**Template-driven forms** are declarative (using \`ngModel\` in HTML) and asynchronous under the hood. They are simpler for small, static forms, but hard to unit test because the form model is created implicitly by Angular's directives.
+
+**Reactive Forms** build an explicit, synchronous form model in TypeScript (\`FormGroup\`, \`FormControl\`). You create the instances in code and bind them to the HTML. 
+
+Reactive forms are much better for:
+- **Dynamic forms:** Generating fields based on a JSON schema at runtime.
+- **Complex validation:** Validating fields against each other (e.g., password matching).
+- **Unit testing:** You can test the form logic synchronously without rendering the DOM.`,
+    tags: ['Angular', 'Reactive Forms', 'Architecture', 'Validation'],
   },
 
   // ── DSA ──────────────────────────────────────────────────────────────────
@@ -753,6 +779,17 @@ When multiple keys have the same lowest frequency, we must evict the *least rece
 **On \`get(key)\` or \`put(key, value)\`:**
 We look up the key's current frequency, delete it from \`freq_to_keys[old_freq]\`, and insert it into \`freq_to_keys[new_freq]\`. If the old bucket becomes empty and it was the \`min_freq\`, we increment \`min_freq\`. No scanning or sorting is ever required.`,
     tags: ['LFU Cache', 'OrderedDict', 'O(1) Design', 'Multiple HashMaps'],
+  },
+  {
+    id: 'dsa-14',
+    category: 'DSA',
+    question: 'Why use a Fenwick Tree instead of a simple prefix-sum array when values change often?',
+    answer: `A simple prefix-sum array allows for **O(1) range queries** but requires **O(N) time for point updates**, because updating one element means you must recalculate every prefix sum that comes after it. 
+
+If updates happen frequently, this O(N) cost becomes a massive bottleneck.
+
+**The Fenwick Tree (Binary Indexed Tree)** solves this by storing partial sums using a clever bit-manipulation trick (\`i & -i\`). This drops the update time from O(N) to **O(log N)**, while keeping query time at **O(log N)**. It offers a perfect balance for real-time analytics where both updates and queries happen constantly.`,
+    tags: ['Fenwick Tree', 'Prefix Sums', 'O(log N)', 'Bit Manipulation'],
   },
 ];
 

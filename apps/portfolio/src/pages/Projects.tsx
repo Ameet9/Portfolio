@@ -419,6 +419,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['useReducer', 'Memento pattern', 'Debouncing', 'State immutability'],
     path: 'learning/react/timetravel-notes',
   },
+  // Sept 20
+  {
+    id: 'blue-green-deploy',
+    title: 'Blue-Green Deployment Simulator',
+    date: 'Sept 20',
+    category: 'System Design',
+    stack: ['Docker', 'Nginx', 'Python'],
+    description: 'A simulator demonstrating zero-downtime deployments using Docker and Nginx. Re-routes traffic instantly between blue and green containers with zero dropped requests via graceful reload.',
+    concepts: ['Zero-downtime deploys', 'Nginx reverse proxy', 'Load balancing', 'Graceful reload'],
+    path: 'learning/system-design/blue-green',
+  },
+  {
+    id: 'angular-dynamic-form',
+    title: 'Dynamic Form Builder',
+    date: 'Sept 20',
+    category: 'Angular',
+    stack: ['Angular 18', 'Reactive Forms'],
+    description: 'A data-driven Angular app that generates validated Reactive Forms strictly from a JSON schema. Uses dynamic components and custom synchronous validators.',
+    concepts: ['Reactive Forms', 'FormGroup', 'Custom Validators', 'Data-driven UI'],
+    path: 'learning/angular/dynamic-form',
+  },
+  {
+    id: 'fenwick-tree',
+    title: 'Analytics Counter (Fenwick Tree)',
+    date: 'Sept 20',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'A real-time analytics counter powered by a Fenwick Tree (Binary Indexed Tree) built from scratch. Achieves O(log N) for both point updates and prefix-sum queries via bit manipulation.',
+    concepts: ['Fenwick Tree', 'Bit manipulation', 'O(log N) Prefix Sums', 'Range queries'],
+    path: 'learning/dsa/fenwick-tree',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────
