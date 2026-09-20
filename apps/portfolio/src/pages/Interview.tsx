@@ -295,6 +295,20 @@ This smooths out the distribution statistically, similar to how flipping a coin 
 Virtual nodes also make **heterogeneous clusters** easy: if Server B has twice the RAM of Server A, just give it 200 virtual nodes instead of 100.`,
     tags: ['Consistent Hashing', 'Virtual Nodes', 'Load Balancing', 'Distributed Systems'],
   },
+  {
+    id: 'sd-14',
+    category: 'System Design',
+    question: 'Why check a token before deleting a Redis lock key instead of just deleting it?',
+    answer: `When using a distributed lock with a TTL (e.g., \`SET lock:resource token NX PX 5000\`), your process might take longer than 5 seconds to finish its work. 
+
+If that happens:
+1. Your lock expires.
+2. Process B acquires the lock for the same resource.
+3. Your process finally finishes its work and calls \`DEL lock:resource\`.
+
+If you just run \`DEL\`, you will delete **Process B's lock**, leaving the resource unprotected. By checking that the value matches your unique token (usually via a Lua script for atomicity) before deleting, you ensure you only release a lock that you still own.`,
+    tags: ['Distributed Locking', 'Redis', 'Race Conditions', 'Atomicity'],
+  },
 
   // ── React & Angular ───────────────────────────────────────────────────────
   {
@@ -482,6 +496,16 @@ useEffect(() => {
 As the user scrolls, the array slice changes, but the total number of DOM nodes stays constant (e.g. 20).`,
     tags: ['Vue', 'React', 'Virtual Scroll', 'Performance'],
   },
+  {
+    id: 'react-13',
+    category: 'React & Angular',
+    question: 'When would you reach for useReducer over useState?',
+    answer: `You should use \`useReducer\` when state transitions are complex, interdependent, or involve multiple related values changing together. 
+
+For example, in an undo/redo system (the Memento pattern), you have three intertwined states: \`past\`, \`present\`, and \`future\`. 
+When you undo, you must pop from \`past\`, overwrite \`present\`, and push to \`future\` simultaneously. Doing this with three separate \`useState\` setters inside a click handler gets tangled fast. \`useReducer\` centralizes this logic into a single, testable, atomic transition.`,
+    tags: ['React', 'useReducer', 'State Management', 'Design Patterns'],
+  },
 
   // ── DSA ──────────────────────────────────────────────────────────────────
   {
@@ -628,6 +652,17 @@ As the user scrolls, the array slice changes, but the total number of DOM nodes 
 
 **Time complexity:** O((V + E) log V) with a binary heap. O(V²) with a plain array scan — actually faster on very dense graphs where E ≈ V².`,
     tags: ['Dijkstra', 'Shortest Path', 'Min-Heap', 'Greedy Invariant'],
+  },
+  {
+    id: 'dsa-13',
+    category: 'DSA',
+    question: 'Why doesn\'t plain Dijkstra work for the "Cheapest Flights Within K Stops" problem?',
+    answer: `Dijkstra's algorithm is greedy: it finalizes the shortest distance to a node the moment it pops it from the priority queue. 
+
+**The Flaw with Constraints:** Dijkstra assumes that once a node's cost is finalized, no other path to it could ever be better. However, a cheaper overall path might exceed the stop limit (K), while a slightly more expensive path uses fewer stops. Dijkstra has no mechanism to reconsider a node based on the *number of edges* used.
+
+**The Fix:** You must modify the priority queue to sort by \`cost\`, but you must ALSO track \`stops\` in the queue. Alternatively, you can drop Dijkstra entirely and use a level-by-level BFS (Bellman-Ford style relaxation), relaxing all edges up to \`K+1\` times. Each round naturally represents one hop.`,
+    tags: ['Dijkstra', 'Bellman-Ford', 'Graph Algorithms', 'LeetCode Variants'],
   },
   {
     id: 'dsa-8',

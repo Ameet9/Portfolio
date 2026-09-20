@@ -398,6 +398,27 @@ const dailyProjects: DailyProject[] = [
     concepts: ['O(1) lookups', 'OrderedDict tie-breaks', 'Multi-map architecture', 'Frequency bumping'],
     path: 'learning/dsa/lfu-cache',
   },
+  // Sept 19
+  {
+    id: 'distributed-locking',
+    title: 'LockStep (Distributed Locking)',
+    date: 'Sept 19',
+    category: 'System Design',
+    stack: ['Python', 'FastAPI', 'Redis', 'Docker'],
+    description: 'A movie seat booking service demonstrating race conditions. Uses Redis (SET NX PX) and Lua scripts to implement a safe distributed lock across multiple instances.',
+    concepts: ['Distributed locking', 'Race conditions', 'Atomic operations', 'Lua scripting'],
+    path: 'learning/system-design/distributed-locking',
+  },
+  {
+    id: 'timetravel-notes',
+    title: 'TimeTravel Notes (Undo/Redo)',
+    date: 'Sept 19',
+    category: 'React',
+    stack: ['React', 'Vite'],
+    description: 'A markdown editor with full undo/redo history using useReducer and the Memento pattern. Includes debounced state commits and keyboard shortcuts.',
+    concepts: ['useReducer', 'Memento pattern', 'Debouncing', 'State immutability'],
+    path: 'learning/react/timetravel-notes',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

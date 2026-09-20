@@ -148,6 +148,18 @@ const caseStudies: CaseStudy[] = [
     concepts: ['Consistent Hashing', 'Virtual Nodes', 'bisect', 'Cache Stampede Prevention'],
     path: 'learning/system-design/consistent-hashing',
   },
+  {
+    id: 'distributed-locking',
+    title: 'LockStep: Distributed Locking with Redis',
+    date: 'Sept 19',
+    pattern: 'Distributed Concurrency',
+    problem: 'How do you prevent two users from booking the same seat/inventory item at the same time when you have multiple server instances?',
+    architecture: 'A FastAPI service uses Redis as a shared lock manager. It acquires a lock using atomic SET NX PX commands and releases it safely using a Lua script to verify ownership via a unique token.',
+    keyInsight: 'An in-memory threading.Lock() fails because it only locks a single process. You must move the lock to a shared data store (like Redis) that all instances can see.',
+    stack: ['Python', 'FastAPI', 'Redis', 'Docker'],
+    concepts: ['Distributed Locking', 'Race Conditions', 'SET NX PX', 'Lua Script Atomicity', 'Redlock Algorithm'],
+    path: 'learning/system-design/distributed-locking',
+  },
 ];
 
 const patternStyles: Record<string, string> = {
@@ -262,6 +274,16 @@ const interviewTopics = [
       'Why do we need virtual nodes in consistent hashing?',
       'How does consistent hashing help with a hot key or hot server problem?',
       'Where have you seen consistent hashing used in real systems?',
+    ],
+  },
+  {
+    title: 'Distributed Concurrency',
+    questions: [
+      'Why can\'t a simple in-memory lock (e.g., threading.Lock) prevent double-booking across multiple servers?',
+      'What happens if the process holding a distributed lock crashes before releasing it?',
+      'Why check a token before deleting the lock key in Redis instead of just deleting it?',
+      'What is the Redlock algorithm and why use multiple Redis nodes?',
+      'What alternatives exist to Redis for distributed locking, and what are their trade-offs?',
     ],
   },
 ];
