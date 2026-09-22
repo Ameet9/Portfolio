@@ -471,6 +471,17 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Segment Tree', 'Divide & Conquer', 'Range Queries', 'Lazy Propagation'],
     path: 'learning/dsa/segment-tree',
   },
+  // Sept 22
+  {
+    id: 'auth-interceptor',
+    title: 'Auto-Refreshing Auth Interceptor',
+    date: 'Sept 22',
+    category: 'Angular',
+    stack: ['Angular 18', 'RxJS'],
+    description: 'An Angular functional interceptor that silently catches expired JWT token (401) errors, refreshes the token behind the scenes, and retries the original request. Includes RxJS locks to prevent concurrent refreshes.',
+    concepts: ['HTTP Interceptors', 'JWT Refresh', 'RxJS switchMap', 'Concurrent Request Locking'],
+    path: 'learning/angular/auth-interceptor',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

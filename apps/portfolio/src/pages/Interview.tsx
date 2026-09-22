@@ -547,6 +547,19 @@ You use interceptors for cross-cutting concerns that apply globally, rather than
 - **Caching:** Intercepting GET requests and returning cached data from memory instead of hitting the network.`,
     tags: ['Angular', 'HttpClient', 'Interceptors', 'Architecture'],
   },
+  {
+    id: 'react-16',
+    category: 'React & Angular',
+    question: 'How do you prevent multiple simultaneous refresh-token calls if several API requests fail with 401 at the same time?',
+    answer: `If three API calls fail simultaneously with a \`401 Unauthorized\`, you don't want three separate \`refreshToken()\` calls racing each other. 
+
+To solve this, use a shared flag and an RxJS \`Subject\` in your interceptor:
+1. When the first 401 hits, check \`isRefreshing\`. If \`false\`, set it to \`true\` and start the API call to refresh the token.
+2. If another 401 hits while \`isRefreshing\` is \`true\`, do **not** trigger a new refresh. Instead, queue the request by subscribing to a \`refreshTokenSubject\` using \`filter(token => token !== null)\` and \`take(1)\`.
+3. Once the active refresh call completes, update the \`refreshTokenSubject\` with the new token. All queued requests will instantly receive it, attach it to their headers, and retry.
+4. Set \`isRefreshing\` back to \`false\`.`,
+    tags: ['Angular', 'RxJS', 'Interceptors', 'Authentication'],
+  },
 
   // ── DSA ──────────────────────────────────────────────────────────────────
   {
