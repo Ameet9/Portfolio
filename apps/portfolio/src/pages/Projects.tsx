@@ -450,6 +450,27 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Fenwick Tree', 'Bit manipulation', 'O(log N) Prefix Sums', 'Range queries'],
     path: 'learning/dsa/fenwick-tree',
   },
+  // Sept 21
+  {
+    id: 'jobhunt-tracker',
+    title: 'JobHunt Tracker (Angular Interceptors)',
+    date: 'Sept 21',
+    category: 'Angular',
+    stack: ['Angular 18', 'RxJS'],
+    description: 'A job application tracker demonstrating Reactive Forms with custom synchronous validators, and HTTP Interceptor functions for managing global loading states and request logging.',
+    concepts: ['Reactive Forms', 'HTTP Interceptors', 'Custom Validators', 'RxJS'],
+    path: 'learning/angular/jobhunt-tracker',
+  },
+  {
+    id: 'segment-tree',
+    title: 'Stock Range Analyzer (Segment Tree)',
+    date: 'Sept 21',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'A custom Segment Tree implementation designed to answer O(log N) range-max queries and handle point updates. Tested rigorously against a brute-force oracle.',
+    concepts: ['Segment Tree', 'Divide & Conquer', 'Range Queries', 'Lazy Propagation'],
+    path: 'learning/dsa/segment-tree',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

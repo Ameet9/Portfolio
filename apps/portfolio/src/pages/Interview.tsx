@@ -532,6 +532,21 @@ Reactive forms are much better for:
 - **Unit testing:** You can test the form logic synchronously without rendering the DOM.`,
     tags: ['Angular', 'Reactive Forms', 'Architecture', 'Validation'],
   },
+  {
+    id: 'react-15',
+    category: 'React & Angular',
+    question: 'What is an HTTP Interceptor in Angular, and what are common real-world use cases?',
+    answer: `An **HTTP Interceptor** is a function (or class in older Angular versions) that sits between your app and the \`HttpClient\`. It catches every outgoing request and incoming response.
+
+You use interceptors for cross-cutting concerns that apply globally, rather than repeating code in every service.
+
+**Common use cases:**
+- **Authentication:** Automatically attaching a JWT Bearer token to the headers of every request.
+- **Loading states:** Toggling a global loading spinner when a request starts, and turning it off when it finishes.
+- **Global error handling:** Catching \`401 Unauthorized\` responses to automatically redirect the user to the login page, or logging \`500\` errors to Sentry.
+- **Caching:** Intercepting GET requests and returning cached data from memory instead of hitting the network.`,
+    tags: ['Angular', 'HttpClient', 'Interceptors', 'Architecture'],
+  },
 
   // ── DSA ──────────────────────────────────────────────────────────────────
   {
@@ -790,6 +805,23 @@ If updates happen frequently, this O(N) cost becomes a massive bottleneck.
 
 **The Fenwick Tree (Binary Indexed Tree)** solves this by storing partial sums using a clever bit-manipulation trick (\`i & -i\`). This drops the update time from O(N) to **O(log N)**, while keeping query time at **O(log N)**. It offers a perfect balance for real-time analytics where both updates and queries happen constantly.`,
     tags: ['Fenwick Tree', 'Prefix Sums', 'O(log N)', 'Bit Manipulation'],
+  },
+  {
+    id: 'dsa-15',
+    category: 'DSA',
+    question: 'Segment Tree vs. Binary Indexed Tree (Fenwick Tree) — what\'s the trade-off?',
+    answer: `Both are O(log N) for point updates and range queries, but they solve slightly different scopes of problems:
+
+**Fenwick Tree (BIT):**
+- Much simpler to code and uses less memory (array of size N).
+- Very fast constant factors due to bit manipulation.
+- **Limitation:** Strictly limited to *invertible* operations (like Sum or XOR) because computing a range query relies on prefix subtraction: \`query(L, R) = query(R) - query(L-1)\`. You can't easily do a Range Max query with a basic BIT.
+
+**Segment Tree:**
+- More complex to code and uses more memory (array of size 4N).
+- **Advantage:** Highly general-purpose. It computes answers by combining distinct segments rather than subtracting prefixes. This allows it to handle non-invertible operations (Min, Max, GCD).
+- **Advantage:** Readily supports *Lazy Propagation* for true O(log N) range updates (updating many elements at once).`,
+    tags: ['Segment Tree', 'Fenwick Tree', 'Range Queries', 'Data Structures'],
   },
 ];
 
