@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-type Category = 'All' | 'JavaScript' | 'System Design' | 'React & Angular' | 'DSA';
+type Category = 'All' | 'JavaScript' | 'JavaScript & Python' | 'Python' | 'System Design' | 'React & Angular' | 'DSA';
 
 interface QA {
   id: string;
@@ -321,6 +321,19 @@ If you just run \`DEL\`, you will delete **Process B's lock**, leaving the resou
 Canary minimizes the "blast radius" of a bad release since only 5% of users see it, but deployments take much longer. Blue-Green is fast but affects 100% of users immediately if there's a bug.`,
     tags: ['Deployments', 'Blue-Green', 'Canary', 'CI/CD'],
   },
+  {
+    id: 'sd-16',
+    category: 'System Design',
+    question: 'How does Kubernetes\' Horizontal Pod Autoscaler (HPA) decide when to scale?',
+    answer: `The HPA controller periodically queries the **metrics-server** (usually every 15 seconds) to fetch live CPU and memory usage for all pods in the target Deployment.
+
+It compares the actual usage against the **requested** amount (not the limit). For example, if your pod requests \`100m\` of CPU and the HPA target is \`50%\`, the HPA wants the pod to average \`50m\` usage.
+
+If average usage spikes to \`150m\` (150%), the HPA scales the replicas up to bring the per-pod average back down to 50%. 
+
+**Crucial caveat:** If a pod does not explicitly declare resource \`requests\` in its YAML, the HPA has no denominator to calculate a percentage against, and autoscaling will completely fail to trigger.`,
+    tags: ['Kubernetes', 'HPA', 'Autoscaling', 'metrics-server'],
+  },
 
   // ── React & Angular ───────────────────────────────────────────────────────
   {
@@ -559,6 +572,19 @@ To solve this, use a shared flag and an RxJS \`Subject\` in your interceptor:
 3. Once the active refresh call completes, update the \`refreshTokenSubject\` with the new token. All queued requests will instantly receive it, attach it to their headers, and retry.
 4. Set \`isRefreshing\` back to \`false\`.`,
     tags: ['Angular', 'RxJS', 'Interceptors', 'Authentication'],
+  },
+
+  // ── Python ───────────────────────────────────────────────────────────────
+  {
+    id: 'python-1',
+    category: 'JavaScript & Python', // we can reuse JavaScript for now or change it later. Wait, let's look at categories array at the bottom of the file
+    question: 'Why use exponential backoff instead of retrying immediately upon failure?',
+    answer: `When a downstream service (like a database or an external API) fails, it's often because it's **overloaded**. 
+
+If your task queue immediately retries the failed job, you are effectively DDoS-ing an already struggling service, creating a **retry storm**. This can turn a minor slow-down into a full outage.
+
+**Exponential backoff** (e.g., waiting 2s, 4s, 8s, 16s...) spaces out the retries. This gives the downstream system crucial breathing room to recover, while still guaranteeing your task will eventually be processed.`,
+    tags: ['Python', 'asyncio', 'Task Queue', 'Resilience', 'Retry Storm'],
   },
 
   // ── DSA ──────────────────────────────────────────────────────────────────
@@ -836,13 +862,34 @@ If updates happen frequently, this O(N) cost becomes a massive bottleneck.
 - **Advantage:** Readily supports *Lazy Propagation* for true O(log N) range updates (updating many elements at once).`,
     tags: ['Segment Tree', 'Fenwick Tree', 'Range Queries', 'Data Structures'],
   },
+  {
+    id: 'dsa-16',
+    category: 'DSA',
+    question: 'How do you design a data structure that supports adding numbers and finding the median efficiently?',
+    answer: `You can solve this using the **Two-Heaps** pattern to achieve \`O(log N)\` inserts and \`O(1)\` median queries.
+
+1. Maintain a **Max-Heap** to store the lower half of the numbers.
+2. Maintain a **Min-Heap** to store the upper half of the numbers.
+
+**Insert logic:**
+Always push the new number into the Max-Heap (the lower half). To guarantee that every number in the lower half is truly $\\le$ every number in the upper half, immediately pop the top of the Max-Heap and push it into the Min-Heap. 
+
+Finally, balance their sizes: if the Min-Heap has more elements than the Max-Heap, pop the Min-Heap and push back to the Max-Heap. This ensures the Max-Heap always has either the exact same number of elements or exactly one more.
+
+**Find Median:**
+- If the heaps are equal in size (even total), the median is the average of both tops.
+- If the Max-Heap is larger (odd total), the median is simply the top of the Max-Heap.`,
+    tags: ['Two-Heaps', 'Median', 'Streaming Data', 'O(log N)'],
+  },
 ];
 
 // ─── Category config ──────────────────────────────────────────────────────────
-const categories: Category[] = ['All', 'JavaScript', 'System Design', 'React & Angular', 'DSA'];
+const categories: Category[] = ['All', 'JavaScript', 'Python', 'System Design', 'React & Angular', 'DSA'];
 
 const categoryStyles: Record<Exclude<Category, 'All'>, string> = {
   'JavaScript':    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
+  'JavaScript & Python': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
+  'Python':        'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
   'System Design': 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   'React & Angular': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
   'DSA':           'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
@@ -910,6 +957,8 @@ export default function Interview() {
   const counts: Record<Category, number> = {
     All: qas.length,
     JavaScript: qas.filter((q) => q.category === 'JavaScript').length,
+    'JavaScript & Python': qas.filter((q) => q.category === 'JavaScript & Python').length,
+    Python: qas.filter((q) => q.category === 'Python').length,
     'System Design': qas.filter((q) => q.category === 'System Design').length,
     'React & Angular': qas.filter((q) => q.category === 'React & Angular').length,
     DSA: qas.filter((q) => q.category === 'DSA').length,

@@ -172,6 +172,18 @@ const caseStudies: CaseStudy[] = [
     concepts: ['Zero-Downtime', 'Reverse Proxy', 'Graceful Reload', 'Canary vs Blue-Green', 'Expand-Contract DB Pattern'],
     path: 'learning/system-design/blue-green',
   },
+  {
+    id: 'k8s-hpa',
+    title: 'Kubernetes Autoscaler (HPA)',
+    date: 'Sept 23',
+    pattern: 'Elastic Capacity',
+    problem: 'How do you handle sudden spikes in traffic automatically, scaling out capacity when needed and scaling it down to save costs when idle?',
+    architecture: 'A Python API runs inside Minikube. A HorizontalPodAutoscaler (HPA) monitors live CPU utilization through the metrics-server. When the CPU usage breaches the 50% target threshold of the requested resources, the HPA controller dynamically modifies the Deployment replica count to add more pods.',
+    keyInsight: 'The HPA relies heavily on explicitly defined resource requests. If a pod does not declare its baseline CPU request, the HPA has no denominator to calculate utilization against, and autoscaling will silently fail to trigger.',
+    stack: ['Kubernetes', 'Docker', 'Python'],
+    concepts: ['Horizontal Pod Autoscaler', 'metrics-server', 'Resource Requests & Limits', 'Load Testing'],
+    path: 'learning/system-design/k8s-hpa',
+  },
 ];
 
 const patternStyles: Record<string, string> = {
@@ -184,6 +196,7 @@ const patternStyles: Record<string, string> = {
   'Resilience / Fault Tolerance': 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
   'Infrastructure as Code': 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300',
   'Container Orchestration': 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-300',
+  'Elastic Capacity': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -306,6 +319,16 @@ const interviewTopics = [
       'How does Nginx achieve a zero-downtime reload?',
       'What metrics would you watch to decide if a deploy is safe?',
       'How would this scale beyond one server?',
+    ],
+  },
+  {
+    title: 'Elastic Capacity',
+    questions: [
+      'How does Kubernetes\' HPA decide when to scale?',
+      'What\'s the difference between horizontal and vertical scaling, and when would you pick one over the other?',
+      'Your autoscaler is thrashing — constantly scaling up and down every minute. Why, and how do you fix it?',
+      'CPU-based autoscaling didn\'t help during a real incident — why might that happen?',
+      'How would you avoid scaling up faster than your database can handle new connections?',
     ],
   },
 ];

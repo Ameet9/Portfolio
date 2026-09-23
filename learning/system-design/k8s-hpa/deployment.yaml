@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hpa-simulator-app
+  labels:
+    app: hpa-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hpa-simulator
+  template:
+    metadata:
+      labels:
+        app: hpa-simulator
+    spec:
+      containers:
+      - name: hpa-simulator-container
+        image: hpa-simulator:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpa-simulator-service
+spec:
+  selector:
+    app: hpa-simulator
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

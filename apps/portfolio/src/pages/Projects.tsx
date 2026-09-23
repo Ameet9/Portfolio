@@ -482,6 +482,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['HTTP Interceptors', 'JWT Refresh', 'RxJS switchMap', 'Concurrent Request Locking'],
     path: 'learning/angular/auth-interceptor',
   },
+  // Sept 23
+  {
+    id: 'k8s-hpa',
+    title: 'Kubernetes Autoscaler (HPA)',
+    date: 'Sept 23',
+    category: 'System Design',
+    stack: ['Kubernetes', 'Minikube', 'Python', 'Docker'],
+    description: 'A Kubernetes Horizontal Pod Autoscaler implementation scaling dynamically based on live CPU usage tracking via metrics-server.',
+    concepts: ['Kubernetes HPA', 'Load testing', 'metrics-server', 'Resource Limits'],
+    path: 'learning/system-design/k8s-hpa',
+  },
+  {
+    id: 'async-task-queue',
+    title: 'Async Task Queue (Worker Pool)',
+    date: 'Sept 23',
+    category: 'Python',
+    stack: ['Python', 'asyncio', 'FastAPI'],
+    description: 'A background job queue mimicking Celery/SQS. Utilizes asyncio.Queue and a concurrent worker pool with exponential backoff for failed tasks.',
+    concepts: ['asyncio', 'Producer/Consumer', 'Worker Pool', 'Exponential Backoff'],
+    path: 'learning/python/async-task-queue',
+  },
+  {
+    id: 'median-tracker',
+    title: 'Real-Time Median Tracker',
+    date: 'Sept 23',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'A streaming median calculator leveraging the two-heaps pattern (min-heap + max-heap) to deliver O(log N) inserts and O(1) median reads, demonstrating why percentiles beat averages for latency monitoring.',
+    concepts: ['Two-Heaps Pattern', 'Streaming Data', 'Percentiles vs Averages', 'Amortized O(log N)'],
+    path: 'learning/dsa/median-tracker',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────
