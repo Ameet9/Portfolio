@@ -769,6 +769,34 @@ Rule of thumb: use \`ref\` for most things to be consistent, and \`reactive\` fo
 **Exponential backoff** spreads out the retries (e.g., 500ms, then 1s, then 2s) and usually adds a bit of randomness (jitter). This gives the server breathing room to recover and spreads the retry traffic over time.`,
     tags: ['System Design', 'Exponential Backoff', 'Retries', 'API'],
   },
+  {
+    id: 'vue-12',
+    category: 'Vue',
+    question: 'How does Vue\'s reactivity system work under the hood?',
+    answer: `Vue 3 uses ES6 **Proxies**. When you wrap an object in \`reactive()\` or \`ref()\`, Vue returns a Proxy.
+
+When a component renders, it reads properties from that Proxy. The Proxy's \`get\` trap records that the component "depends on" this specific property. 
+When you mutate the property later, the Proxy's \`set\` trap fires, looks up all the components that depended on it, and triggers them to re-render. This dependency tracking is entirely automatic and highly granular.`,
+    tags: ['Vue 3', 'Reactivity', 'Proxies', 'Under the Hood'],
+  },
+  {
+    id: 'vue-13',
+    category: 'Vue',
+    question: 'Why use a state management library like Pinia instead of just passing props?',
+    answer: `Passing props is fine for parent-to-child data. But when state needs to be shared across deeply nested components or distant siblings (e.g., three separate Kanban columns that all need the master card list), you run into **Prop Drilling** — passing data through components that don't need it, just to get it where it belongs.
+
+Pinia extracts that shared state into a global store. Any component can read or write to it directly, acting as a single source of truth. It also gives you Vue DevTools integration to time-travel debug state mutations.`,
+    tags: ['Vue 3', 'Pinia', 'State Management', 'Prop Drilling'],
+  },
+  {
+    id: 'vue-14',
+    category: 'Vue',
+    question: 'How would you optimize a Vue component that renders 10,000 items (like a giant list or Kanban board)?',
+    answer: `You should use **DOM Virtualization** (e.g., using a library like \`vue-virtual-scroller\`). 
+
+Instead of generating 10,000 \`<div>\` elements (which will crash or severely lag the browser), virtualization only renders the handful of items currently visible in the viewport, plus a small buffer. As the user scrolls, it recycles the DOM nodes, swapping out the data inside them.`,
+    tags: ['Vue 3', 'Performance', 'Virtualization', 'Large Lists'],
+  },
 
   // ── Python ───────────────────────────────────────────────────────────────
   {
@@ -1163,6 +1191,46 @@ The memory footprint remains completely bounded to \`O(k)\` (just the heap and s
 3. **Kafka/Event Streams:** A consumer reading ordered events from multiple partitions needs a k-way merge to process them in global chronological order.
 4. **Distributed Tracing:** Assembling a single timeline of spans from multiple microservices.`,
     tags: ['System Design', 'Distributed Systems', 'Log Aggregation', 'Kafka'],
+  },
+  {
+    id: 'dsa-25',
+    category: 'DSA',
+    question: 'Implement a Trie with insert, search, and startsWith methods. What is the time complexity?',
+    answer: `**Time Complexity:** \`O(L)\` for all three operations, where \`L\` is the length of the word. This is independent of how many millions of words are stored in the Trie.
+
+**Implementation detail:** Each \`TrieNode\` holds a dictionary of children and an \`isEndOfWord\` boolean flag. When searching, if you exhaust the characters of the target word but \`isEndOfWord\` is false, it means the word is only a prefix of another word, and you must return false.`,
+    tags: ['Trie', 'Prefix Tree', 'O(L)', 'Data Structures'],
+  },
+  {
+    id: 'dsa-26',
+    category: 'DSA',
+    question: 'How does a Trie compare to a Hash Set for storing a dictionary of words?',
+    answer: `Both provide **\`O(L)\`** time complexity for looking up a word (where \`L\` is word length). 
+
+**Hash Set advantages:** Simpler to implement, uses less memory (usually), and is built into most languages.
+**Trie advantages:** The killer feature is the **\`startsWith(prefix)\`** query. A Hash Set cannot efficiently find all words starting with "app"; it would have to scan every single word in the dictionary. A Trie does this trivially in \`O(prefix_length)\`. Tries also easily support retrieving alphabetical ordering.`,
+    tags: ['Trie', 'Hash Set', 'Comparisons', 'Prefix Search'],
+  },
+  {
+    id: 'dsa-27',
+    category: 'DSA',
+    question: 'How would you design an autocomplete feature for a search engine with millions of queries?',
+    answer: `A basic Trie works, but at scale you need:
+
+1. **Ranking:** Nodes must store frequency or weight, so \`getSuggestions\` sorts by popularity, not just alphabetically.
+2. **Caching:** Cache the top 10 results for very common prefixes (like "how", "what") in Redis or memory, bypassing the Trie traversal entirely.
+3. **Offline processing:** Don't update the Trie in real time. Process search logs asynchronously in a MapReduce pipeline and periodically swap out a new, read-only Trie on the frontend servers.
+4. **Sharding:** If the Trie is too large for one machine, shard it by the first character (e.g., Server A holds prefixes a-m, Server B holds n-z).`,
+    tags: ['System Design', 'Autocomplete', 'Trie', 'Scaling'],
+  },
+  {
+    id: 'dsa-28',
+    category: 'DSA',
+    question: 'What is the space complexity tradeoff of a Trie, and how do you optimize it?',
+    answer: `A standard Trie can be extremely memory-hungry due to the overhead of node objects and pointer dictionaries for *every single character*. A long, unbranched word like "hippopotamus" creates 12 separate nodes.
+
+To optimize this, you use a **Compressed Trie (or Radix Tree)**. In a Radix Tree, any node with only one child is merged with its child. So the entire suffix "ippopotamus" would be stored in a single node, massively reducing memory overhead.`,
+    tags: ['Trie', 'Space Complexity', 'Radix Tree', 'Optimization'],
   },
 ];
 

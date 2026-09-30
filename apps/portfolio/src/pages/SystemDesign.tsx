@@ -17,6 +17,18 @@ interface CaseStudy {
 
 const caseStudies: CaseStudy[] = [
   {
+    id: 'cache-aside',
+    title: 'Cache-Aside API & Stampede Prevention',
+    date: 'Sept 29',
+    pattern: 'Caching Strategies',
+    problem: 'How do you speed up a read-heavy API that hits a slow database, and how do you prevent the database from collapsing if the cache expires during a massive traffic spike?',
+    architecture: 'A FastAPI service fronted by Redis. It implements the cache-aside pattern: the app checks Redis, falls back to the database on a miss, and populates Redis with a TTL. To prevent cache stampedes, it uses in-memory Futures (single-flight locking) so concurrent requests for a missing key wait on the first request rather than hammering the database.',
+    keyInsight: 'Caching is easy; cache invalidation and thundering herds are hard. Single-flight locking ensures that no matter how much concurrent traffic hits an expired key, the underlying database only ever sees a single query.',
+    stack: ['Python', 'FastAPI', 'Redis', 'Docker'],
+    concepts: ['Cache-Aside', 'TTL', 'Cache Stampede', 'Single-flight Locking'],
+    path: 'learning/system-design/cache-aside',
+  },
+  {
     id: 'saga-pattern',
     title: 'Saga Pattern Simulator',
     date: 'Sept 28',
@@ -223,6 +235,7 @@ const patternStyles: Record<string, string> = {
   'Elastic Capacity': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
   'Observability / Distributed Tracing': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300',
   'Distributed Transactions': 'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300',
+  'Caching Strategies': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -375,6 +388,16 @@ const interviewTopics = [
       'What happens if a compensating transaction itself fails?',
       'How does the Saga pattern relate to the CAP theorem?',
       'Why must compensating actions be idempotent?',
+    ],
+  },
+  {
+    title: 'Caching Strategies',
+    questions: [
+      'How would you design a caching layer for a read-heavy API?',
+      'What\'s the difference between cache-aside, read-through, and write-through caching?',
+      'How do you handle stale data in a cache?',
+      'What is a cache stampede and how do you prevent it?',
+      'When would you NOT use a cache?',
     ],
   },
 ];

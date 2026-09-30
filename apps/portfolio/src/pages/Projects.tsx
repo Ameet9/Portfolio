@@ -608,6 +608,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Min-Heap', 'K-Way Merge', 'External Merge Sort', 'Time Complexity'],
     path: 'learning/dsa/merge-k-logs',
   },
+  // Sept 29
+  {
+    id: 'cache-aside',
+    title: 'Cache-Aside API & Stampede Prevention',
+    date: 'Sept 29',
+    category: 'System Design',
+    stack: ['Python', 'FastAPI', 'Redis', 'Docker'],
+    description: 'A containerized API implementing the cache-aside pattern with Redis. Includes TTL expiration and single-flight locking (Promises/Futures) to completely prevent cache stampedes (thundering herd) under heavy concurrent load.',
+    concepts: ['Cache-Aside', 'Redis', 'TTL', 'Cache Stampede', 'Single-flight Locking'],
+    path: 'learning/system-design/cache-aside',
+  },
+  {
+    id: 'kanban-board',
+    title: 'Drag & Drop Kanban Board',
+    date: 'Sept 29',
+    category: 'Vue',
+    stack: ['Vue 3', 'Pinia', 'HTML5 Drag & Drop'],
+    description: 'A Trello-style Kanban board built with Vue 3 and Pinia. Features native HTML5 drag-and-drop for moving cards between columns, normalized state shape for O(1) updates, and automatic localStorage persistence via Pinia subscriptions.',
+    concepts: ['State Normalization', 'Pinia Subscriptions', 'Native Drag-and-Drop', 'localStorage'],
+    path: 'learning/vue/kanban-board',
+  },
+  {
+    id: 'trie-autocomplete',
+    title: 'Trie Autocomplete Engine',
+    date: 'Sept 29',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'A search autocomplete engine powered by a custom Trie (prefix tree). Supports O(L) insertion and prefix matching, with frequency-weighted suggestions to rank the most relevant words first.',
+    concepts: ['Trie (Prefix Tree)', 'DFS Tree Traversal', 'O(L) Complexity', 'Weighted Suggestions'],
+    path: 'learning/dsa/trie-autocomplete',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────
