@@ -1,0 +1,57 @@
+.dashboard {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* CSS classes for visual flash based on trend */
+.up {
+  color: green;
+  animation: flashGreen 1s ease-out;
+}
+
+.down {
+  color: red;
+  animation: flashRed 1s ease-out;
+}
+
+.flat {
+  color: inherit;
+}
+
+@keyframes flashGreen {
+  0% { background-color: rgba(0, 255, 0, 0.2); }
+  100% { background-color: transparent; }
+}
+
+@keyframes flashRed {
+  0% { background-color: rgba(255, 0, 0, 0.2); }
+  100% { background-color: transparent; }
+}

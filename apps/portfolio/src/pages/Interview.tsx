@@ -573,6 +573,35 @@ To solve this, use a shared flag and an RxJS \`Subject\` in your interceptor:
 4. Set \`isRefreshing\` back to \`false\`.`,
     tags: ['Angular', 'RxJS', 'Interceptors', 'Authentication'],
   },
+  {
+    id: 'react-17',
+    category: 'React & Angular',
+    question: 'What is the difference between an Observable and a Promise?',
+    answer: `**Promises** resolve once with a single value, and their execution cannot be cancelled.
+
+**Observables** can emit multiple values over time (a stream). They are "lazy", meaning they don't do any work until something subscribes to them. Crucially, they are **cancellable** — you can unsubscribe at any point to stop receiving data and cancel underlying network requests.`,
+    tags: ['Angular', 'RxJS', 'Promises', 'Observables'],
+  },
+  {
+    id: 'react-18',
+    category: 'React & Angular',
+    question: 'Why is unsubscribing important in Angular, and what patterns prevent leaks?',
+    answer: `If a component creates a manual RxJS subscription (e.g., to an infinite stream or an event listener) and doesn't unsubscribe when the component is destroyed, that subscription remains active in memory. This causes memory leaks and bug-inducing double executions if the component is re-created later.
+
+**Best Practices:**
+- Use the **\`async\` pipe** (\`obs$ | async\`) in templates. It automatically subscribes and safely unsubscribes on destroy.
+- Use the **\`takeUntil(this.destroy$)\` pattern**. You create a Subject that emits in \`ngOnDestroy()\`, and pipe your subscriptions through it to kill them cleanly.`,
+    tags: ['Angular', 'RxJS', 'Memory Leaks', 'takeUntil', 'Async Pipe'],
+  },
+  {
+    id: 'react-19',
+    category: 'React & Angular',
+    question: 'What is the difference between Subject, BehaviorSubject, and ReplaySubject?',
+    answer: `- **\`Subject\`**: Has no memory of past values. If you subscribe *after* a value was emitted, you miss it. Useful for simple events (like a click stream).
+- **\`BehaviorSubject\`**: Always holds exactly one current value. Any new subscriber immediately receives this "latest" value upon subscribing. Useful for state management (like a user profile object).
+- **\`ReplaySubject\`**: Can replay a configurable number of past values to new subscribers. Useful when you want to buffer historical events for late-arriving listeners.`,
+    tags: ['Angular', 'RxJS', 'Subject', 'State Management'],
+  },
 
   // ── Python ───────────────────────────────────────────────────────────────
   {

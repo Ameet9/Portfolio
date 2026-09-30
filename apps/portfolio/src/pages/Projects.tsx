@@ -513,6 +513,17 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Two-Heaps Pattern', 'Streaming Data', 'Percentiles vs Averages', 'Amortized O(log N)'],
     path: 'learning/dsa/median-tracker',
   },
+  // Sept 24
+  {
+    id: 'stock-ticker',
+    title: 'Real-Time Stock Dashboard',
+    date: 'Sept 24',
+    category: 'Angular',
+    stack: ['Angular 18', 'RxJS', 'TypeScript'],
+    description: 'A live-updating mock stock dashboard using RxJS Observables to stream data. Implements debounceTime for search and lifecycle-safe unsubscription using takeUntil.',
+    concepts: ['RxJS Streams', 'BehaviorSubject', 'debounceTime', 'takeUntil cleanup'],
+    path: 'learning/angular/stock-ticker',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

@@ -1,0 +1,33 @@
+<div class="dashboard">
+  <h1>Real-Time Stock Ticker</h1>
+  
+  <div class="search-container">
+    <input type="text" [formControl]="searchControl" placeholder="Search stock symbol..." />
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Price</th>
+        <th>Change</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stock of filteredStocks$ | async">
+        <td><strong>{{ stock.symbol }}</strong></td>
+        <!-- CSS classes flash green or red based on trend -->
+        <td [ngClass]="stock.trend">
+          {{ stock.price | currency }}
+        </td>
+        <td [ngClass]="stock.trend">
+          {{ (stock.price - stock.lastPrice) | currency }}
+        </td>
+      </tr>
+      
+      <tr *ngIf="(filteredStocks$ | async)?.length === 0">
+        <td colspan="3">No stocks found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
