@@ -1,0 +1,66 @@
+<div class="dashboard">
+  <h1>Live Crypto Ticker</h1>
+  
+  <div class="ticker-container" *ngIf="cryptoStream$ | async as cryptos; else loading">
+    <div class="coin-card" *ngFor="let coin of cryptos">
+      <div class="coin-header">
+        <h2>{{ coin.name }} ({{ coin.symbol | uppercase }})</h2>
+      </div>
+      <div class="coin-price">
+        ${{ coin.current_price | number:'1.2-2' }}
+        <span class="trend" [ngClass]="coin.trend">
+          <span *ngIf="coin.trend === 'up'">▲</span>
+          <span *ngIf="coin.trend === 'down'">▼</span>
+          <span *ngIf="coin.trend === 'flat'">-</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <p>Loading crypto prices...</p>
+  </ng-template>
+</div>
+
+<style>
+  .dashboard {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .ticker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .coin-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .coin-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  .coin-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .trend.up {
+    color: green;
+  }
+  .trend.down {
+    color: red;
+  }
+  .trend.flat {
+    color: gray;
+  }
+</style>

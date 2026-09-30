@@ -602,6 +602,33 @@ To solve this, use a shared flag and an RxJS \`Subject\` in your interceptor:
 - **\`ReplaySubject\`**: Can replay a configurable number of past values to new subscribers. Useful when you want to buffer historical events for late-arriving listeners.`,
     tags: ['Angular', 'RxJS', 'Subject', 'State Management'],
   },
+  {
+    id: 'react-20',
+    category: 'React & Angular',
+    question: 'What is the difference between switchMap, mergeMap, concatMap, and exhaustMap?',
+    answer: `- **\`switchMap\`**: Cancels the previous inner observable and switches to the new one. Best for search-as-you-type or polling where only the latest request matters.
+- **\`mergeMap\`**: Runs all inner observables in parallel. Best for firing off multiple independent saves or fetches.
+- **\`concatMap\`**: Queues inner observables in order, waiting for one to finish before starting the next. Best when order matters (e.g., sequentially saving chunks of a file).
+- **\`exhaustMap\`**: Ignores new emissions while an inner observable is in progress. Best for preventing double form submits (e.g., ignore rapid button clicks until the first API call finishes).`,
+    tags: ['Angular', 'RxJS', 'Operators', 'switchMap'],
+  },
+  {
+    id: 'react-21',
+    category: 'React & Angular',
+    question: 'What is a hot vs. cold observable?',
+    answer: `- **Cold Observable**: Starts producing values *only* when subscribed to. Each subscriber gets its own independent execution. (e.g., an \`HttpClient\` GET request — it fires a new network request for every subscriber).
+- **Hot Observable**: Produces values regardless of whether there are subscribers, and all subscribers share the same stream of data. (e.g., a stream of \`mousemove\` events, or a \`BehaviorSubject\` holding live crypto prices).`,
+    tags: ['Angular', 'RxJS', 'Hot vs Cold', 'Observables'],
+  },
+  {
+    id: 'react-22',
+    category: 'React & Angular',
+    question: 'How is RxJS similar to how message queues work in backend systems?',
+    answer: `Both are built around the concept of handling a stream of events asynchronously over time, decoupling the **producer** of events from the **consumer**. 
+
+In backend systems, a service produces messages to a Kafka or SQS queue, and a worker consumer pulls and processes them. In the frontend, the DOM or an API produces events, and RxJS acts as the stream/queue, letting you map, filter, or combine those events before a component consumes them. Both architectures allow systems to remain responsive under heavy asynchronous load.`,
+    tags: ['Angular', 'RxJS', 'System Design', 'Event-Driven'],
+  },
 
   // ── Python ───────────────────────────────────────────────────────────────
   {

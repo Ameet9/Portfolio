@@ -524,6 +524,17 @@ const dailyProjects: DailyProject[] = [
     concepts: ['RxJS Streams', 'BehaviorSubject', 'debounceTime', 'takeUntil cleanup'],
     path: 'learning/angular/stock-ticker',
   },
+  // Sept 25
+  {
+    id: 'crypto-ticker',
+    title: 'Live Crypto Ticker Dashboard',
+    date: 'Sept 25',
+    category: 'Angular',
+    stack: ['Angular 18', 'RxJS', 'HttpClient'],
+    description: 'A live-updating crypto dashboard that polls a REST API using RxJS interval() and switchMap() to prevent race conditions, and pairwise() to compare previous and current prices.',
+    concepts: ['RxJS switchMap', 'RxJS pairwise', 'API Polling', 'Hot vs Cold Observables'],
+    path: 'learning/angular/crypto-ticker',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────
