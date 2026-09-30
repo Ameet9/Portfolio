@@ -535,6 +535,17 @@ const dailyProjects: DailyProject[] = [
     concepts: ['RxJS switchMap', 'RxJS pairwise', 'API Polling', 'Hot vs Cold Observables'],
     path: 'learning/angular/crypto-ticker',
   },
+  // Sept 26
+  {
+    id: 'market-ticker',
+    title: 'Live Market Ticker Dashboard',
+    date: 'Sept 26',
+    category: 'Vue',
+    stack: ['Vue 3', 'Composition API', 'SVG'],
+    description: 'A Vue 3 dashboard tracking simulated stock prices using the Composition API. Uses a custom composable for reactive intervals, computed properties for price direction, and renders an inline SVG sparkline per stock. Features pause/resume and strict onUnmounted lifecycle cleanup.',
+    concepts: ['Composables', 'SVG Sparklines', 'computed vs methods', 'Lifecycle Cleanup'],
+    path: 'learning/vue/market-ticker',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

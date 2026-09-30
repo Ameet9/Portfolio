@@ -5,7 +5,7 @@ const highlights = [
     title: 'Daily Builds',
     description: 'Hands-on projects covering full-stack, systems, and DSA',
     path: '/projects',
-    count: '39',
+    count: '40',
   },
   {
     title: 'Engineering Notes',
@@ -23,7 +23,7 @@ const highlights = [
     title: 'Interview Prep',
     description: 'Senior-level Q&A extracted from actual project work',
     path: '/interview',
-    count: '54',
+    count: '58',
   },
 ];
 

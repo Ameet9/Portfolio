@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-type Category = 'All' | 'JavaScript' | 'JavaScript & Python' | 'Python' | 'System Design' | 'React & Angular' | 'DSA';
+type Category = 'All' | 'JavaScript' | 'JavaScript & Python' | 'Python' | 'System Design' | 'React & Angular' | 'Vue' | 'DSA';
 
 interface QA {
   id: string;
@@ -630,6 +630,47 @@ In backend systems, a service produces messages to a Kafka or SQS queue, and a w
     tags: ['Angular', 'RxJS', 'System Design', 'Event-Driven'],
   },
 
+  // ── Vue ──────────────────────────────────────────────────────────────────
+  {
+    id: 'vue-1',
+    category: 'Vue',
+    question: 'What is the difference between a computed property and a method in Vue?',
+    answer: `**Computed properties** are cached based on their reactive dependencies. They will only re-evaluate when some reactive data they depend on changes. 
+
+**Methods** re-run their logic every single time the component re-renders, regardless of whether their inputs changed. 
+
+Use \`computed\` for derived state (like filtering a list or calculating a total) to avoid unnecessary recalculations, and use \`methods\` for actions or event handlers (like submitting a form or clicking a button).`,
+    tags: ['Vue 3', 'Computed', 'Methods', 'Performance'],
+  },
+  {
+    id: 'vue-2',
+    category: 'Vue',
+    question: 'Why extract logic into a composable instead of writing it directly in the component?',
+    answer: `Composables (Vue 3's version of React Hooks) allow you to extract stateful logic out of a component. 
+- **Reusability**: You can share the exact same logic (like mouse tracking, fetching data, or live timers) across multiple components without mixins or higher-order components.
+- **Organization**: You can group related code together instead of scattering it across \`data\`, \`methods\`, and \`mounted\` hooks.
+- **Testing**: Composables can be imported and tested in isolation without needing to mount a full component.`,
+    tags: ['Vue 3', 'Composition API', 'Composables', 'Architecture'],
+  },
+  {
+    id: 'vue-3',
+    category: 'Vue',
+    question: 'How do you avoid memory leaks with timers or subscriptions in a component?',
+    answer: `Always pair a "start" with a "stop". If you call \`setInterval\` or subscribe to a WebSocket in \`onMounted\` (or inside a composable's setup phase), you must explicitly clear it (e.g., \`clearInterval\`) in the \`onUnmounted\` lifecycle hook. 
+
+If you forget, that interval continues running in the background indefinitely even after the user navigates away from the component, wasting memory and CPU (a memory leak).`,
+    tags: ['Vue 3', 'Lifecycle', 'Memory Leaks', 'onUnmounted'],
+  },
+  {
+    id: 'vue-4',
+    category: 'Vue',
+    question: 'How is Vue\'s reactivity system different from React\'s?',
+    answer: `**Vue** uses a proxy-based reactive state model. When you read a reactive property in a template or computed property, Vue tracks that dependency. When you mutate the property directly (e.g., \`state.count++\`), Vue precisely updates only the components and DOM nodes that rely on it.
+
+**React** does not track individual property access. State is immutable, so you must explicitly call a setter (e.g., \`setCount(c + 1)\`). By default, React then re-renders the *entire component tree* from that point downwards, relying on a Virtual DOM diff to figure out what changed, which often requires manual memoization (\`useMemo\`, \`React.memo\`) to optimize.`,
+    tags: ['Vue 3', 'React', 'Reactivity', 'Virtual DOM'],
+  },
+
   // ── Python ───────────────────────────────────────────────────────────────
   {
     id: 'python-1',
@@ -940,7 +981,7 @@ Finally, balance their sizes: if the Min-Heap has more elements than the Max-Hea
 ];
 
 // ─── Category config ──────────────────────────────────────────────────────────
-const categories: Category[] = ['All', 'JavaScript', 'Python', 'System Design', 'React & Angular', 'DSA'];
+const categories: Category[] = ['All', 'JavaScript', 'Python', 'System Design', 'React & Angular', 'Vue', 'DSA'];
 
 const categoryStyles: Record<Exclude<Category, 'All'>, string> = {
   'JavaScript':    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
@@ -948,6 +989,7 @@ const categoryStyles: Record<Exclude<Category, 'All'>, string> = {
   'Python':        'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
   'System Design': 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   'React & Angular': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+  'Vue':           'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
   'DSA':           'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
 };
 
@@ -1017,6 +1059,7 @@ export default function Interview() {
     Python: qas.filter((q) => q.category === 'Python').length,
     'System Design': qas.filter((q) => q.category === 'System Design').length,
     'React & Angular': qas.filter((q) => q.category === 'React & Angular').length,
+    Vue: qas.filter((q) => q.category === 'Vue').length,
     DSA: qas.filter((q) => q.category === 'DSA').length,
   };
 
