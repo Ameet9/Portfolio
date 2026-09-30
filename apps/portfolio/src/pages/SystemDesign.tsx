@@ -17,6 +17,18 @@ interface CaseStudy {
 
 const caseStudies: CaseStudy[] = [
   {
+    id: 'saga-pattern',
+    title: 'Saga Pattern Simulator',
+    date: 'Sept 28',
+    pattern: 'Distributed Transactions',
+    problem: 'How do you maintain data consistency across Order, Payment, and Inventory microservices when you can\'t use a single ACID database transaction?',
+    architecture: 'An Orchestrator executes a state machine of steps. Each step provides an execute() and a compensate() function. As steps succeed, they are pushed to a stack. If a step fails, the orchestrator pops from the stack and runs the compensate() functions in reverse order.',
+    keyInsight: 'Distributed systems trade strict consistency for availability and eventual consistency. By providing idempotent compensating transactions, the system can gracefully rollback partial successes without holding brittle cross-network database locks.',
+    stack: ['Python'],
+    concepts: ['Compensating Transactions', 'Orchestration', 'Eventual Consistency', 'Idempotency'],
+    path: 'learning/system-design/saga-pattern',
+  },
+  {
     id: 'distributed-tracing',
     title: 'Trace the Request (OpenTelemetry)',
     date: 'Sept 27',
@@ -210,6 +222,7 @@ const patternStyles: Record<string, string> = {
   'Container Orchestration': 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-300',
   'Elastic Capacity': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
   'Observability / Distributed Tracing': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300',
+  'Distributed Transactions': 'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -352,6 +365,16 @@ const interviewTopics = [
       'What is a span, and what is the relationship between a span and a trace?',
       'How would you use tracing to find the cause of intermittent slowness?',
       'At scale, you can\'t trace every single request — how do you handle that?',
+    ],
+  },
+  {
+    title: 'Distributed Transactions & Sagas',
+    questions: [
+      'What problem does the Saga pattern solve, and why can\'t you use ACID transactions?',
+      'What\'s the difference between orchestration-based and choreography-based sagas?',
+      'What happens if a compensating transaction itself fails?',
+      'How does the Saga pattern relate to the CAP theorem?',
+      'Why must compensating actions be idempotent?',
     ],
   },
 ];

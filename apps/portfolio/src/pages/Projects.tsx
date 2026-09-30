@@ -577,6 +577,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Two-Pointer Pattern', 'Invariants', 'ASCII Visualization', 'Array Preprocessing'],
     path: 'learning/dsa/trapping-rain-water',
   },
+  // Sept 28
+  {
+    id: 'saga-pattern',
+    title: 'Saga Pattern Simulator',
+    date: 'Sept 28',
+    category: 'System Design',
+    stack: ['Python'],
+    description: 'A simulation of the Saga pattern for distributed transactions across microservices. Implements an orchestrator that manages forward execution and reverse compensating transactions on failure.',
+    concepts: ['Distributed Transactions', 'Compensating Transactions', 'Orchestration vs Choreography', 'Eventual Consistency'],
+    path: 'learning/system-design/saga-pattern',
+  },
+  {
+    id: 'vue-use-fetch',
+    title: 'useFetch with SWR Caching',
+    date: 'Sept 28',
+    category: 'Vue',
+    stack: ['Vue 3', 'Composition API', 'TypeScript'],
+    description: 'A custom Vue composable that caches API responses in memory, serves stale data instantly while revalidating in the background, handles retries with exponential backoff, and cancels stale requests using AbortController.',
+    concepts: ['Stale-While-Revalidate', 'Exponential Backoff', 'AbortController', 'Composables'],
+    path: 'learning/vue/use-fetch',
+  },
+  {
+    id: 'merge-k-logs',
+    title: 'Merge K Sorted Logs (Min-Heap)',
+    date: 'Sept 28',
+    category: 'DSA',
+    stack: ['Python', 'heapq'],
+    description: 'A memory-efficient streaming log aggregator that merges multiple chronologically sorted log files into a single unified stream using a min-heap, achieving O(N log k) time complexity.',
+    concepts: ['Min-Heap', 'K-Way Merge', 'External Merge Sort', 'Time Complexity'],
+    path: 'learning/dsa/merge-k-logs',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

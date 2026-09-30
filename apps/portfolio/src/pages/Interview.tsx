@@ -740,6 +740,35 @@ The biggest gotcha/difference is that **React hooks must follow the "Rules of Ho
 **Vue composables** are only called once during the component's \`setup()\` phase. Vue relies on its Proxy-based reactivity system to track changes, so there are no strict rules about call order, making them generally easier to reason about.`,
     tags: ['Vue 3', 'React Hooks', 'Composables', 'Reactivity'],
   },
+  {
+    id: 'vue-9',
+    category: 'Vue',
+    question: 'What is the difference between `ref` and `reactive` in Vue 3?',
+    answer: `**\`ref\`** can wrap any value type (primitives like strings/numbers, or objects). You must access and mutate its value using \`.value\` in script (though it unwraps automatically in templates).
+
+**\`reactive\`** only works on object types (objects, arrays, Map, Set). You interact with it directly without \`.value\`. 
+
+Rule of thumb: use \`ref\` for most things to be consistent, and \`reactive\` for logically grouped state objects that you always use together.`,
+    tags: ['Vue 3', 'ref', 'reactive', 'State'],
+  },
+  {
+    id: 'vue-10',
+    category: 'Vue',
+    question: 'Explain the stale-while-revalidate (SWR) caching pattern and its trade-offs.',
+    answer: `**Stale-while-revalidate** is a caching strategy where you instantly return cached (potentially stale) data to the UI, while simultaneously kicking off a background request to fetch fresh data. Once the fresh data arrives, you silently update the cache and the UI.
+
+**Trade-off:** You prioritize *perceived performance* (instant UI) over perfect accuracy. This is great for a feed or a dashboard, but inappropriate for a checkout page where showing an outdated bank balance or inventory count could lead to user errors.`,
+    tags: ['Caching', 'SWR', 'Performance', 'UX'],
+  },
+  {
+    id: 'vue-11',
+    category: 'Vue',
+    question: 'Why use exponential backoff instead of fixed-interval retries when an API fails?',
+    answer: `If a server is overloaded and dropping requests, thousands of clients retrying at the exact same fixed interval (e.g., every 1 second) will create a **Thundering Herd** problem, further overloading the already struggling server.
+
+**Exponential backoff** spreads out the retries (e.g., 500ms, then 1s, then 2s) and usually adds a bit of randomness (jitter). This gives the server breathing room to recover and spreads the retry traffic over time.`,
+    tags: ['System Design', 'Exponential Backoff', 'Retries', 'API'],
+  },
 
   // ── Python ───────────────────────────────────────────────────────────────
   {
@@ -1086,6 +1115,54 @@ Thus, we safely calculate the trapped water for the left pointer and move it inw
 
 You start by pushing all boundary cells into the heap. You always pop the cell with the lowest height (just like moving the smaller of the two pointers). For its unvisited neighbors, the water level is constrained by this cell's height. You calculate any trapped water, mark them visited, push them into the heap with their updated effective boundary height, and repeat. This is essentially a specialized BFS (Dijkstra-like) from the outside in.`,
     tags: ['Graphs', 'BFS', 'Min-Heap', '2D Grids'],
+  },
+  {
+    id: 'dsa-21',
+    category: 'DSA',
+    question: 'Walk me through merging k sorted lists — what is your approach and its time complexity?',
+    answer: `1. Initialize a **Min-Heap** of size \`k\`.
+2. Push the *first* element from each of the \`k\` lists into the heap. Store it as a tuple: \`(value, list_index, element_index)\`.
+3. Pop the smallest item from the heap and add it to your output.
+4. Using the \`list_index\` and \`element_index\` from the popped item, fetch the *next* element from that specific list and push it into the heap.
+5. Repeat until the heap is empty.
+
+**Time Complexity:** \`O(N log k)\`, where \`N\` is the total number of elements across all lists. Each of the \`N\` elements is pushed and popped from a heap of size \`k\` exactly once.`,
+    tags: ['K-Way Merge', 'Min-Heap', 'Priority Queue', 'O(N log k)'],
+  },
+  {
+    id: 'dsa-22',
+    category: 'DSA',
+    question: 'Why use a heap for k sorted lists instead of just concatenating everything and sorting?',
+    answer: `Concatenating and sorting ignores the fact that each list is *already sorted*. 
+
+A full re-sort costs **\`O(N log N)\`**. 
+The heap approach costs **\`O(N log k)\`**.
+
+When \`k\` is small relative to \`N\` (e.g., merging 5 log files containing a billion lines each), \`O(N log 5)\` is astronomically faster than \`O(N log 1,000,000,000)\`.`,
+    tags: ['Time Complexity', 'Optimization', 'Sorting', 'K-Way Merge'],
+  },
+  {
+    id: 'dsa-23',
+    category: 'DSA',
+    question: 'How would you merge k sorted files if they were too large to fit in memory?',
+    answer: `This requires an **External Merge Sort**.
+
+Instead of loading all files into memory, you open file streams for each of the \`k\` files. You read just one line (or a small chunk) from each file into the heap. As you pop the smallest item from the heap and stream it directly to an output file, you read the next single line from that specific input file's stream.
+
+The memory footprint remains completely bounded to \`O(k)\` (just the heap and small stream buffers), allowing you to merge files vastly larger than your available RAM.`,
+    tags: ['System Design', 'External Sort', 'Streaming', 'Memory Constraints'],
+  },
+  {
+    id: 'dsa-24',
+    category: 'DSA',
+    question: 'Where does the k-way merge pattern show up in real distributed systems?',
+    answer: `It is foundational to processing ordered data at scale:
+
+1. **Log Aggregation:** Stitching together chronological logs from multiple independent servers.
+2. **Databases:** The final step of an external sort, or merging query results from multiple sharded/partitioned database nodes (Scatter-Gather).
+3. **Kafka/Event Streams:** A consumer reading ordered events from multiple partitions needs a k-way merge to process them in global chronological order.
+4. **Distributed Tracing:** Assembling a single timeline of spans from multiple microservices.`,
+    tags: ['System Design', 'Distributed Systems', 'Log Aggregation', 'Kafka'],
   },
 ];
 
