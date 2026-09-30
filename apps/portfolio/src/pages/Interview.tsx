@@ -661,6 +661,34 @@ To solve this, use a shared flag and an RxJS \`Subject\` in your interceptor:
 In backend systems, a service produces messages to a Kafka or SQS queue, and a worker consumer pulls and processes them. In the frontend, the DOM or an API produces events, and RxJS acts as the stream/queue, letting you map, filter, or combine those events before a component consumes them. Both architectures allow systems to remain responsive under heavy asynchronous load.`,
     tags: ['Angular', 'RxJS', 'System Design', 'Event-Driven'],
   },
+  {
+    id: 'react-23',
+    category: 'React & Angular',
+    question: 'What is Optimistic UI, and when is it appropriate to use?',
+    answer: `Optimistic UI is a pattern where you update the frontend state immediately after a user action, *before* the server has confirmed success. If the server request later fails, you rollback the UI to its previous state.
+
+It makes apps feel instant (like liking a post on Twitter). It is appropriate for low-stakes actions that succeed 99% of the time (likes, toggles). It is **not** appropriate for high-stakes actions like payments or deleting an account, where showing a false success could be disastrous.`,
+    tags: ['React', 'Optimistic UI', 'UX', 'Eventual Consistency'],
+  },
+  {
+    id: 'react-24',
+    category: 'React & Angular',
+    question: 'How do you handle race conditions from rapid repeated optimistic actions?',
+    answer: `If a user rapidly clicks "Like" and then "Unlike", two API requests are fired. If the network is flaky, the "Like" response might arrive *after* the "Unlike" response, incorrectly overwriting the final UI state.
+
+You solve this by tracking request IDs or using an **\`AbortController\`**. When a new action is fired, you immediately abort the previous in-flight request so its stale response is completely ignored.`,
+    tags: ['React', 'Race Conditions', 'AbortController', 'Networking'],
+  },
+  {
+    id: 'react-25',
+    category: 'React & Angular',
+    question: 'How does Optimistic UI connect to distributed systems theory?',
+    answer: `It is the frontend equivalent of **Eventual Consistency**. 
+
+In distributed backend systems, a write to Node A might take a moment to replicate to Node B. During that window, a read from Node B might return stale data (sacrificing strict consistency for high availability). 
+Optimistic UI does the exact same thing: the client shows an unconfirmed state (sacrificing strict consistency) to provide instant perceived speed (high availability/responsiveness), trusting that the server will reconcile shortly.`,
+    tags: ['System Design', 'Eventual Consistency', 'Optimistic Updates'],
+  },
 
   // ── Vue ──────────────────────────────────────────────────────────────────
   {
@@ -1231,6 +1259,52 @@ The memory footprint remains completely bounded to \`O(k)\` (just the heap and s
 
 To optimize this, you use a **Compressed Trie (or Radix Tree)**. In a Radix Tree, any node with only one child is merged with its child. So the entire suffix "ippopotamus" would be stored in a single node, massively reducing memory overhead.`,
     tags: ['Trie', 'Space Complexity', 'Radix Tree', 'Optimization'],
+  },
+  {
+    id: 'dsa-29',
+    category: 'DSA',
+    question: 'What is a monotonic stack, and what signals in a problem suggest you should use one?',
+    answer: `A monotonic stack is a stack kept in strictly increasing or strictly decreasing order by popping elements that violate the order before pushing.
+
+**Signals to use it:** "Next greater element", "next smaller element", "span", "how far can I see before something blocks my view", or any problem where you need to track a bounding constraint backwards or forwards over an array.`,
+    tags: ['DSA', 'Monotonic Stack', 'Patterns', 'Next Greater'],
+  },
+  {
+    id: 'dsa-30',
+    category: 'DSA',
+    question: 'The stock span algorithm uses a nested while loop inside a for loop. Why is it O(n) and not O(n^2)?',
+    answer: `This is a classic example of **amortized analysis**.
+
+Even though there's a \`while\` loop inside the \`for\` loop, every element is pushed onto the stack exactly once and popped at most once across the *entire* execution of the program. Therefore, the total number of push and pop operations is bounded by \`2n\`. 
+Individual days might trigger an expensive \`while\` loop, but the total work across all days averages out to \`O(1)\` per day, making the overall algorithm \`O(n)\`.`,
+    tags: ['DSA', 'Amortized Analysis', 'Time Complexity', 'O(n)'],
+  },
+  {
+    id: 'dsa-31',
+    category: 'DSA',
+    question: 'How would you adapt the monotonic stack to solve "Largest Rectangle in Histogram"?',
+    answer: `You keep a stack of indices, strictly ensuring the heights corresponding to those indices are in increasing order. 
+
+When you encounter a new bar that is shorter than the top of the stack (violating the order), you pop the top index. The popped height is the height of your rectangle. The width is the difference between your current index and the *new* top of the stack. You multiply them to get the area, and repeat until the order is restored.`,
+    tags: ['DSA', 'Monotonic Stack', 'Largest Rectangle', 'Algorithms'],
+  },
+  {
+    id: 'dsa-32',
+    category: 'DSA',
+    question: 'When do you reach for a monotonic stack versus a monotonic deque (like in Sliding Window Maximum)?',
+    answer: `Use a **stack** when you only ever look backwards (or forwards) from the current element with no expiration from the "front" (e.g., spans, next-greater problems).
+
+Use a **deque** when you are processing a moving *window* of fixed size, because elements need to expire and be removed from the front of the queue as the window slides forward.`,
+    tags: ['DSA', 'Monotonic Stack', 'Deque', 'Sliding Window'],
+  },
+  {
+    id: 'dsa-33',
+    category: 'DSA',
+    question: 'How do you convince an interviewer that your clever O(n) solution is actually correct?',
+    answer: `Write a naive, brute-force \`O(n^2)\` reference solution (an **oracle**). Then, write a small test harness that generates randomized inputs and asserts that the fast \`O(n)\` solution perfectly matches the naive oracle's output.
+
+This proves correctness through **property-based testing**, catching tricky off-by-one errors that small hardcoded examples usually miss.`,
+    tags: ['DSA', 'Testing', 'Oracle', 'Property Testing'],
   },
 ];
 

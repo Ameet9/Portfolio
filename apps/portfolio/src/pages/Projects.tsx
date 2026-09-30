@@ -639,6 +639,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Trie (Prefix Tree)', 'DFS Tree Traversal', 'O(L) Complexity', 'Weighted Suggestions'],
     path: 'learning/dsa/trie-autocomplete',
   },
+  // Sept 30
+  {
+    id: 'bulkhead-pattern',
+    title: 'Bulkhead Pattern & Resource Isolation',
+    date: 'Sept 30',
+    category: 'System Design',
+    stack: ['Python', 'ThreadPoolExecutor'],
+    description: 'A resiliency simulation proving how a single slow dependency can starve an entire system of resources. Implements the Bulkhead pattern using isolated thread pools to guarantee healthy services remain fast.',
+    concepts: ['Resource Isolation', 'Cascading Failures', 'ThreadPool Limits', 'Bulkhead vs Circuit Breaker'],
+    path: 'learning/system-design/bulkhead-pattern',
+  },
+  {
+    id: 'optimistic-ui',
+    title: 'Optimistic UI Hook',
+    date: 'Sept 30',
+    category: 'React',
+    stack: ['React', 'TypeScript', 'Vite'],
+    description: 'A custom React hook that instantly updates the UI before the server responds, providing a snappy user experience. Features seamless rollback on network failure and AbortController to cancel stale requests during race conditions.',
+    concepts: ['Optimistic Updates', 'Rollbacks', 'Eventual Consistency', 'Race Conditions'],
+    path: 'learning/react/optimistic-ui',
+  },
+  {
+    id: 'monotonic-stack',
+    title: 'Stock Span Analyzer (Monotonic Stack)',
+    date: 'Sept 30',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'An amortized O(n) solution to the Online Stock Span and Next Greater Element problems. Uses a decreasing monotonic stack to efficiently track running constraints without nested loops.',
+    concepts: ['Monotonic Stack', 'Amortized Analysis', 'Oracle Testing', 'Next Greater Element'],
+    path: 'learning/dsa/monotonic-stack',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

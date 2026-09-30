@@ -17,6 +17,18 @@ interface CaseStudy {
 
 const caseStudies: CaseStudy[] = [
   {
+    id: 'bulkhead-pattern',
+    title: 'Bulkhead Pattern & Resource Isolation',
+    date: 'Sept 30',
+    pattern: 'Resilience / Fault Tolerance',
+    problem: 'How do you prevent a single slow dependency (e.g. a flaky payment gateway) from eating all your server threads and bringing down completely unrelated, healthy endpoints?',
+    architecture: 'Two Python simulations side-by-side. The naive approach uses a single shared ThreadPoolExecutor where slow requests quickly monopolize the workers. The resilient approach uses the Bulkhead Pattern—assigning isolated ThreadPoolExecutors to different dependencies so failure is physically partitioned.',
+    keyInsight: 'Resiliency isn\'t just about retrying failures; it\'s about containing the blast radius. Just like a ship\'s watertight compartments, resource isolation guarantees that one leaky abstraction won\'t sink the entire server.',
+    stack: ['Python', 'ThreadPoolExecutor'],
+    concepts: ['Bulkhead Pattern', 'Resource Starvation', 'Little\'s Law', 'Cascading Failures'],
+    path: 'learning/system-design/bulkhead-pattern',
+  },
+  {
     id: 'cache-aside',
     title: 'Cache-Aside API & Stampede Prevention',
     date: 'Sept 29',
@@ -398,6 +410,16 @@ const interviewTopics = [
       'How do you handle stale data in a cache?',
       'What is a cache stampede and how do you prevent it?',
       'When would you NOT use a cache?',
+    ],
+  },
+  {
+    title: 'Resiliency Patterns',
+    questions: [
+      'What is the Bulkhead pattern and where does the name come from?',
+      'How is Bulkhead different from Circuit Breaker?',
+      'How would you implement bulkheading in an async language like Node.js?',
+      'What are the downsides of bulkheading?',
+      'How do you decide how big each bulkhead\'s resource pool should be?',
     ],
   },
 ];
