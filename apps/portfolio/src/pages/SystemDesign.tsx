@@ -17,6 +17,18 @@ interface CaseStudy {
 
 const caseStudies: CaseStudy[] = [
   {
+    id: 'distributed-tracing',
+    title: 'Trace the Request (OpenTelemetry)',
+    date: 'Sept 27',
+    pattern: 'Observability / Distributed Tracing',
+    problem: 'When a user request touches 5 different microservices and is slow, how do you figure out exactly which service caused the delay without manually cross-referencing logs across machines?',
+    architecture: 'Two FastAPI services (order-service and inventory-service) auto-instrumented with OpenTelemetry. A traceparent header (carrying trace ID and span ID) is propagated via httpx. Spans are batched and exported to a Jaeger backend where they are visualized as a single waterfall.',
+    keyInsight: 'Logs tell you what happened, metrics tell you if something is wrong, but traces tell you WHERE something is wrong in a complex topology. The magic of context propagation is that the downstream service seamlessly attaches its local work as a "child" span to the original request.',
+    stack: ['Python', 'OpenTelemetry', 'Jaeger', 'FastAPI'],
+    concepts: ['Traceparent headers', 'Spans vs Traces', 'Context Propagation', 'Jaeger Waterfall'],
+    path: 'learning/system-design/distributed-tracing',
+  },
+  {
     id: 'token-bucket',
     title: 'Token Bucket Rate Limiter',
     date: 'Sept 9',
@@ -197,6 +209,7 @@ const patternStyles: Record<string, string> = {
   'Infrastructure as Code': 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300',
   'Container Orchestration': 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-300',
   'Elastic Capacity': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+  'Observability / Distributed Tracing': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -329,6 +342,16 @@ const interviewTopics = [
       'Your autoscaler is thrashing — constantly scaling up and down every minute. Why, and how do you fix it?',
       'CPU-based autoscaling didn\'t help during a real incident — why might that happen?',
       'How would you avoid scaling up faster than your database can handle new connections?',
+    ],
+  },
+  {
+    title: 'Observability & Tracing',
+    questions: [
+      'What\'s the difference between logs, metrics, and traces?',
+      'How does trace context get passed from one microservice to another over HTTP?',
+      'What is a span, and what is the relationship between a span and a trace?',
+      'How would you use tracing to find the cause of intermittent slowness?',
+      'At scale, you can\'t trace every single request — how do you handle that?',
     ],
   },
 ];

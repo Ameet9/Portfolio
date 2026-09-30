@@ -546,6 +546,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Composables', 'SVG Sparklines', 'computed vs methods', 'Lifecycle Cleanup'],
     path: 'learning/vue/market-ticker',
   },
+  // Sept 27
+  {
+    id: 'distributed-tracing',
+    title: 'Trace the Request (OpenTelemetry)',
+    date: 'Sept 27',
+    category: 'System Design',
+    stack: ['Python', 'FastAPI', 'Jaeger', 'Docker'],
+    description: 'A distributed tracing setup with two microservices instrumented using OpenTelemetry. Traces propagate via W3C traceparent headers and are visualized in a Jaeger UI waterfall.',
+    concepts: ['Distributed Tracing', 'OpenTelemetry', 'Jaeger', 'Context Propagation'],
+    path: 'learning/system-design/distributed-tracing',
+  },
+  {
+    id: 'vue-smart-form',
+    title: 'Smart Form Composable',
+    date: 'Sept 27',
+    category: 'Vue',
+    stack: ['Vue 3', 'Composition API', 'TypeScript'],
+    description: 'A reusable Vue composable (useForm) that manages form state and performs debounced async validation. Includes AbortController logic to prevent race conditions during rapid typing.',
+    concepts: ['Composables', 'Debouncing', 'AbortController', 'Race Conditions'],
+    path: 'learning/vue/smart-form',
+  },
+  {
+    id: 'trapping-rain-water',
+    title: 'Trapping Rain Water Visualizer',
+    date: 'Sept 27',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'An O(n) time and O(1) space two-pointer solution to the Trapping Rain Water problem, complete with an ASCII art elevation map visualizer and complexity benchmarks.',
+    concepts: ['Two-Pointer Pattern', 'Invariants', 'ASCII Visualization', 'Array Preprocessing'],
+    path: 'learning/dsa/trapping-rain-water',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

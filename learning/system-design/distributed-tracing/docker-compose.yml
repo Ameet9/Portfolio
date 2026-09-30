@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+    ports:
+      - "8001:8000"
+    environment:
+      - OTEL_SERVICE_NAME=inventory-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+    depends_on:
+      - jaeger
+
+  order-service:
+    build:
+      context: ./order-service
+    ports:
+      - "8002:8000"
+    environment:
+      - OTEL_SERVICE_NAME=order-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - INVENTORY_SERVICE_URL=http://inventory-service:8000
+    depends_on:
+      - inventory-service
+      - jaeger

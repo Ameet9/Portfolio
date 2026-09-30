@@ -5,7 +5,7 @@ const highlights = [
     title: 'Daily Builds',
     description: 'Hands-on projects covering full-stack, systems, and DSA',
     path: '/projects',
-    count: '40',
+    count: '43',
   },
   {
     title: 'Engineering Notes',
@@ -17,13 +17,13 @@ const highlights = [
     title: 'System Design',
     description: 'Architecture case studies with code and trade-offs',
     path: '/system-design',
-    count: '13',
+    count: '14',
   },
   {
     title: 'Interview Prep',
     description: 'Senior-level Q&A extracted from actual project work',
     path: '/interview',
-    count: '58',
+    count: '69',
   },
 ];
 

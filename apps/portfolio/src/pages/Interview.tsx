@@ -334,6 +334,38 @@ If average usage spikes to \`150m\` (150%), the HPA scales the replicas up to br
 **Crucial caveat:** If a pod does not explicitly declare resource \`requests\` in its YAML, the HPA has no denominator to calculate a percentage against, and autoscaling will completely fail to trigger.`,
     tags: ['Kubernetes', 'HPA', 'Autoscaling', 'metrics-server'],
   },
+  {
+    id: 'sd-17',
+    category: 'System Design',
+    question: 'What\'s the difference between logs, metrics, and traces?',
+    answer: `They are the three pillars of observability, each with a specific role:
+
+1. **Logs:** Discrete events with rich context (\`"User X failed to login due to bad password"\`). Great for deep debugging, but terrible for seeing the big picture.
+2. **Metrics:** Aggregated numbers over time (\`"500 errors per second"\`). They are cheap to store and perfect for dashboarding and triggering automated alerts.
+3. **Traces:** The causal timeline of a single request across a distributed system. They tell you exactly *where* the time went (\`"The request took 2s total; 1.8s was spent in the Inventory Service's DB"\`).`,
+    tags: ['Observability', 'Logs', 'Metrics', 'Traces'],
+  },
+  {
+    id: 'sd-18',
+    category: 'System Design',
+    question: 'How does trace context get passed from one microservice to another over HTTP?',
+    answer: `Through standardized HTTP headers, most commonly the W3C **\`traceparent\`** header.
+
+When Service A calls Service B, the instrumentation library (like OpenTelemetry) intercepts the outbound HTTP request and injects the current \`trace_id\` and the current \`span_id\` into the headers. 
+
+Service B's web framework intercepts the incoming request, reads the \`traceparent\` header, and uses it to start a new "child" span under the same global trace ID. This is called **Context Propagation**.`,
+    tags: ['Distributed Tracing', 'traceparent', 'Context Propagation', 'OpenTelemetry'],
+  },
+  {
+    id: 'sd-19',
+    category: 'System Design',
+    question: 'At scale, you can\'t trace every single request — how do you handle that?',
+    answer: `You use **Sampling**, saving only a representative fraction of traces to reduce overhead and storage costs.
+
+1. **Head-based sampling:** A coin is flipped at the very beginning of the request (e.g., 5% chance). That decision is propagated downstream so all services agree to trace or ignore that request. It's cheap, but you might miss rare errors.
+2. **Tail-based sampling:** 100% of traces are temporarily buffered in a collector (like Jaeger or an OTEL collector). A decision is made *after* the request finishes — e.g., keep the trace if an error occurred or if it was unusually slow, otherwise discard it. It guarantees you capture the interesting outliers, but requires massive memory/compute in the collector.`,
+    tags: ['Distributed Tracing', 'Sampling', 'System Design'],
+  },
 
   // ── React & Angular ───────────────────────────────────────────────────────
   {
@@ -670,6 +702,44 @@ If you forget, that interval continues running in the background indefinitely ev
 **React** does not track individual property access. State is immutable, so you must explicitly call a setter (e.g., \`setCount(c + 1)\`). By default, React then re-renders the *entire component tree* from that point downwards, relying on a Virtual DOM diff to figure out what changed, which often requires manual memoization (\`useMemo\`, \`React.memo\`) to optimize.`,
     tags: ['Vue 3', 'React', 'Reactivity', 'Virtual DOM'],
   },
+  {
+    id: 'vue-5',
+    category: 'Vue',
+    question: 'What\'s the difference between `watch` and `watchEffect` in Vue 3?',
+    answer: `**\`watch\`** requires you to explicitly specify the reactive sources you want to observe. It gives you access to both the old and new values. This makes it perfect for cases where you want precise control, like a debounced search field.
+
+**\`watchEffect\`** automatically tracks any reactive dependencies accessed synchronously inside its callback. It's more concise but less explicit, meaning it might re-run on changes you didn't intend to track if you're not careful.`,
+    tags: ['Vue 3', 'watch', 'watchEffect', 'Reactivity'],
+  },
+  {
+    id: 'vue-6',
+    category: 'Vue',
+    question: 'How do you prevent a race condition where multiple async validation calls are in flight?',
+    answer: `If a user types quickly, the network response for "ab" might arrive *after* the response for "abc", incorrectly overwriting the fresh UI with stale data.
+
+To fix this, use an **\`AbortController\`**. Store the controller instance, and whenever a new request is triggered, call \`.abort()\` on the previous controller before creating a new one. In your \`catch\` block, ignore errors named \`AbortError\`.`,
+    tags: ['Vue 3', 'Async', 'Race Conditions', 'AbortController'],
+  },
+  {
+    id: 'vue-7',
+    category: 'Vue',
+    question: 'Explain debouncing vs. throttling.',
+    answer: `**Debounce**: Waits for a pause in activity before executing. For example, search-as-you-type or form validation shouldn't fire on every keystroke, but only after the user stops typing for 400ms.
+
+**Throttle**: Ensures a function executes at most once per fixed time interval, regardless of activity. For example, tracking scroll position or window resizing shouldn't fire 1000 times a second, but instead at a steady rate of every 100ms.`,
+    tags: ['JavaScript', 'Debounce', 'Throttle', 'Performance'],
+  },
+  {
+    id: 'vue-8',
+    category: 'Vue',
+    question: 'How do Vue composables compare to React hooks? Any gotchas?',
+    answer: `Both extract reusable stateful logic into functions. 
+
+The biggest gotcha/difference is that **React hooks must follow the "Rules of Hooks"** (cannot be called conditionally or in loops) because React tracks them by call order on every render. 
+
+**Vue composables** are only called once during the component's \`setup()\` phase. Vue relies on its Proxy-based reactivity system to track changes, so there are no strict rules about call order, making them generally easier to reason about.`,
+    tags: ['Vue 3', 'React Hooks', 'Composables', 'Reactivity'],
+  },
 
   // ── Python ───────────────────────────────────────────────────────────────
   {
@@ -977,6 +1047,45 @@ Finally, balance their sizes: if the Min-Heap has more elements than the Max-Hea
 - If the heaps are equal in size (even total), the median is the average of both tops.
 - If the Max-Heap is larger (odd total), the median is simply the top of the Max-Heap.`,
     tags: ['Two-Heaps', 'Median', 'Streaming Data', 'O(log N)'],
+  },
+  {
+    id: 'dsa-17',
+    category: 'DSA',
+    question: 'Walk me through why the two-pointer approach works for Trapping Rain Water.',
+    answer: `The water trapped above any column is determined by the minimum of the highest walls to its left and right. 
+
+In the two-pointer approach, we maintain a \`left_max\` and \`right_max\`. If the wall at the left pointer is shorter than the wall at the right pointer, we know that \`left_max\` is the limiting factor for the left pointer's water capacity. We don't need to know the exact highest wall on the right, just that it's *at least* as tall as our right pointer, which is already taller than our left side.
+
+Thus, we safely calculate the trapped water for the left pointer and move it inward. This invariant guarantees we never miscalculate.`,
+    tags: ['Two-Pointer', 'Invariants', 'Greedy', 'O(1) Space'],
+  },
+  {
+    id: 'dsa-18',
+    category: 'DSA',
+    question: 'What is the brute-force complexity for Trapping Rain Water, and how do you optimize it?',
+    answer: `1. **Brute Force (O(n²))**: For every column, manually scan all the way to the left to find the max, and all the way to the right to find the max.
+2. **Precomputed Arrays (O(n) time, O(n) space)**: Do one pass left-to-right to build an array of \`left_max\` values, and one pass right-to-left to build an array of \`right_max\` values. Then do a final pass to calculate water.
+3. **Two Pointers (O(n) time, O(1) space)**: Instead of storing arrays, just maintain two running max variables from both ends and process whichever side is currently bounded by the smaller max.`,
+    tags: ['Algorithm Design', 'Optimization', 'Time/Space Complexity'],
+  },
+  {
+    id: 'dsa-19',
+    category: 'DSA',
+    question: 'How does Trapping Rain Water relate to Container With Most Water?',
+    answer: `Both problems use the inward-moving two-pointer pattern based on height constraints, but they optimize for different things:
+
+- **Container With Most Water** looks for the *single best pair* of walls to maximize area (\`width × min(height)\`).
+- **Trapping Rain Water** sums up trapped water *at every single intermediate position*, bounded by the running maximums on each side.`,
+    tags: ['Two-Pointer', 'Pattern Recognition', 'Comparisons'],
+  },
+  {
+    id: 'dsa-20',
+    category: 'DSA',
+    question: 'How would you extend Trapping Rain Water to a 2D grid (Trapping Rain Water II)?',
+    answer: `You generalize the two-pointer boundary into a perimeter of cells around the grid using a **Min-Heap (Priority Queue)**.
+
+You start by pushing all boundary cells into the heap. You always pop the cell with the lowest height (just like moving the smaller of the two pointers). For its unvisited neighbors, the water level is constrained by this cell's height. You calculate any trapped water, mark them visited, push them into the heap with their updated effective boundary height, and repeat. This is essentially a specialized BFS (Dijkstra-like) from the outside in.`,
+    tags: ['Graphs', 'BFS', 'Min-Heap', '2D Grids'],
   },
 ];
 
