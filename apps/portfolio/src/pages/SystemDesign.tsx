@@ -17,6 +17,18 @@ interface CaseStudy {
 
 const caseStudies: CaseStudy[] = [
   {
+    id: 'grpc-microservices',
+    title: 'gRPC Order & Inventory Microservices',
+    date: 'Oct 2',
+    pattern: 'Microservice Communication',
+    problem: 'How do you connect internal microservices in a way that guarantees strict data contracts and high-performance parsing, rather than relying on brittle JSON over slow HTTP/1.1 connections?',
+    architecture: 'Two microservices communicating natively via gRPC over HTTP/2. The contract is defined in a .proto file, enforcing strict types. Includes both a standard Unary RPC call and a Server-Streaming RPC call for pushing live updates to the client.',
+    keyInsight: 'JSON is for humans, binary is for machines. By using Protocol Buffers and gRPC, internal service communication becomes strictly typed and incredibly fast, completely eliminating an entire class of serialization and field-name bugs.',
+    stack: ['Python', 'gRPC', 'Protocol Buffers'],
+    concepts: ['gRPC', 'Protocol Buffers', 'Server Streaming', 'Microservice Boundaries'],
+    path: 'learning/system-design/grpc-microservices',
+  },
+  {
     id: 'bulkhead-pattern',
     title: 'Bulkhead Pattern & Resource Isolation',
     date: 'Sept 30',
@@ -248,6 +260,7 @@ const patternStyles: Record<string, string> = {
   'Observability / Distributed Tracing': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300',
   'Distributed Transactions': 'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300',
   'Caching Strategies': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
+  'Microservice Communication': 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -420,6 +433,16 @@ const interviewTopics = [
       'How would you implement bulkheading in an async language like Node.js?',
       'What are the downsides of bulkheading?',
       'How do you decide how big each bulkhead\'s resource pool should be?',
+    ],
+  },
+  {
+    title: 'Microservice Communication',
+    questions: [
+      'When would you choose gRPC over REST for microservices?',
+      'What is Protocol Buffers and why is it more efficient than JSON?',
+      'What are the four types of gRPC communication patterns?',
+      'How do you handle backward compatibility when a proto schema changes?',
+      'How would you secure service-to-service gRPC calls in production?',
     ],
   },
 ];

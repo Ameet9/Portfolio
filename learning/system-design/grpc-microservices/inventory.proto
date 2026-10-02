@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package inventory;
+
+// The Inventory service definition.
+service Inventory {
+  // Unary RPC to check stock for a single item
+  rpc CheckStock (StockRequest) returns (StockResponse) {}
+  
+  // Server streaming RPC to continuously monitor stock
+  rpc WatchStock (StockRequest) returns (stream StockResponse) {}
+}
+
+// The request message containing the item ID.
+message StockRequest {
+  string item_id = 1;
+}
+
+// The response message containing the stock quantity and availability.
+message StockResponse {
+  string item_id = 1;
+  int32 quantity = 2;
+  bool in_stock = 3;
+}

@@ -689,6 +689,38 @@ In distributed backend systems, a write to Node A might take a moment to replica
 Optimistic UI does the exact same thing: the client shows an unconfirmed state (sacrificing strict consistency) to provide instant perceived speed (high availability/responsiveness), trusting that the server will reconcile shortly.`,
     tags: ['System Design', 'Eventual Consistency', 'Optimistic Updates'],
   },
+  {
+    id: 'react-26',
+    category: 'React & Angular',
+    question: 'What is the Compound Component pattern and when would you reach for it?',
+    answer: `The Compound Component pattern is an advanced component design pattern where multiple related components (like \`Tabs\`, \`TabList\`, \`Tab\`, \`TabPanel\`) work together to form a cohesive UI, while sharing implicit state behind the scenes via Context.
+
+You reach for it when a component has grown too complex and requires a massive, rigid list of props to control its behavior (e.g. \`<Tabs tabs={[{...}]} onTabClick={...} />\`). Compound components shift the layout power to the consumer via composition, completely eliminating prop drilling.`,
+    tags: ['React', 'Compound Components', 'Design Patterns', 'Architecture'],
+  },
+  {
+    id: 'react-27',
+    category: 'React & Angular',
+    question: 'What are the performance pitfalls of the React Context API, and how do you avoid them?',
+    answer: `The biggest pitfall is that **every consumer of a Context re-renders whenever the Context value changes**, even if they only care about a part of that value.
+
+To avoid performance drops:
+1. **Split contexts:** Separate state from dispatch (e.g., \`CountContext\` and \`CountDispatchContext\`).
+2. **Memoize the provider value:** Use \`useMemo\` on the object you pass to \`value={{...}}\` so it doesn't create a new reference on every parent render.
+3. **Use state management libraries:** For high-frequency updates (like mouse positions), avoid Context and use libraries like Zustand or Redux which allow selective subscriptions.`,
+    tags: ['React', 'Context API', 'Performance', 'useMemo'],
+  },
+  {
+    id: 'react-28',
+    category: 'React & Angular',
+    question: 'What is the difference between a controlled and uncontrolled component?',
+    answer: `A **controlled component** relies entirely on the parent to manage its state via props (e.g. \`value\` and \`onChange\`). The parent is the single source of truth.
+
+An **uncontrolled component** manages its own internal state using \`useState\` or a \`ref\`, and the parent doesn't need to pass state into it.
+
+A well-designed UI component (like an Accordion) is often uncontrolled by default (it just works when dropped in), but accepts \`value\`/\`onChange\` props to become controlled if the parent *wants* to drive the state.`,
+    tags: ['React', 'Controlled Components', 'State Management'],
+  },
 
   // ── Vue ──────────────────────────────────────────────────────────────────
   {
@@ -1298,7 +1330,27 @@ Use a **deque** when you are processing a moving *window* of fixed size, because
     tags: ['DSA', 'Monotonic Stack', 'Deque', 'Sliding Window'],
   },
   {
-    id: 'dsa-33',
+    id: 'dsa-34',
+    category: 'DSA',
+    question: 'What other problems use this same next-greater-element pattern?',
+    answer: `The next-greater-element pattern shows up constantly. Beyond Daily Temperatures, it's the core engine for:
+- **Stock Span Problem:** How many consecutive previous days had a price <= today?
+- **Trapping Rain Water:** Finding the bounding walls on either side.
+- **Largest Rectangle in Histogram:** Finding the next smaller bar to the left and right.
+- **Remove K Digits:** Building the smallest possible number by popping larger digits when a smaller one appears.`,
+    tags: ['DSA', 'Monotonic Stack', 'Next Greater Element', 'Patterns'],
+  },
+  {
+    id: 'dsa-35',
+    category: 'DSA',
+    question: 'How would you adapt a monotonic stack for a circular array (e.g. Next Greater Element II)?',
+    answer: `Instead of duplicating the array in memory, you conceptually loop through it twice using the modulo operator (\`i % n\`). 
+
+You run your standard monotonic stack \`for\` loop from \`0\` to \`2n - 1\`. This allows elements near the end of the array to "wrap around" and see elements at the beginning, perfectly simulating a circular array in O(1) extra space.`,
+    tags: ['DSA', 'Monotonic Stack', 'Circular Array', 'Modulo'],
+  },
+  {
+    id: 'dsa-36',
     category: 'DSA',
     question: 'How do you convince an interviewer that your clever O(n) solution is actually correct?',
     answer: `Write a naive, brute-force \`O(n^2)\` reference solution (an **oracle**). Then, write a small test harness that generates randomized inputs and asserts that the fast \`O(n)\` solution perfectly matches the naive oracle's output.

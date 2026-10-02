@@ -670,6 +670,37 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Monotonic Stack', 'Amortized Analysis', 'Oracle Testing', 'Next Greater Element'],
     path: 'learning/dsa/monotonic-stack',
   },
+  // Oct 2
+  {
+    id: 'grpc-microservices',
+    title: 'gRPC Order & Inventory Microservices',
+    date: 'Oct 2',
+    category: 'System Design',
+    stack: ['Python', 'gRPC', 'Protocol Buffers'],
+    description: 'Two communicating microservices built with gRPC and Protocol Buffers. Demonstrates strict typed contracts, unary RPCs, and server-streaming for high-performance internal service-to-service communication.',
+    concepts: ['gRPC', 'Protocol Buffers', 'Server Streaming', 'Microservice Communication'],
+    path: 'learning/system-design/grpc-microservices',
+  },
+  {
+    id: 'react-compound-components',
+    title: 'Build-Your-Own UI Kit (Compound Components)',
+    date: 'Oct 2',
+    category: 'React',
+    stack: ['React', 'TypeScript', 'Context API'],
+    description: 'A reusable UI kit (Tabs and Accordion) built using the Compound Component pattern. Demonstrates advanced React component design, relying on Context to implicitly share state and avoid prop drilling.',
+    concepts: ['Compound Components', 'Context API', 'Prop Drilling', 'Component Composition'],
+    path: 'learning/react/compound-components',
+  },
+  {
+    id: 'daily-temperatures',
+    title: 'Daily Temperatures (Monotonic Stack)',
+    date: 'Oct 2',
+    category: 'DSA',
+    stack: ['Python'],
+    description: 'An optimal O(n) algorithmic solution to the classic "Next Warmer Day" problem using a decreasing monotonic stack. Validated extensively against a brute-force oracle via property testing.',
+    concepts: ['Monotonic Stack', 'Amortized O(n)', 'Oracle Testing'],
+    path: 'learning/dsa/daily-temperatures',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────
