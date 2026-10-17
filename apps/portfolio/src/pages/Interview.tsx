@@ -1419,6 +1419,107 @@ If you stored idempotency keys in each server's local memory, Request 1 might hi
 With a shared Redis instance, all API servers check and write to the same store, making the idempotency guarantee hold regardless of which server handles which request.`,
     tags: ['System Design', 'Distributed State', 'Load Balancing', 'Shared Store'],
   },
+  // ── Database Replication & Scaling (Oct 4) ──────────────────────────────────
+  {
+    id: 'sd-24',
+    category: 'System Design',
+    question: 'How would you scale a database that is getting overwhelmed by read queries?',
+    answer: `The standard 3-tiered approach:
+
+1. **Read Replicas (First lever):** Configure streaming replication from the Primary to one or more Standby Replicas. Use a query router to direct \`INSERT\`/\`UPDATE\`/\`DELETE\` to Primary and \`SELECT\` to Replicas.
+2. **Connection Pooling:** Use PgBouncer/Pgpool to multiplex hundreds of client connections into a small pool of database processes, preventing connection exhaustion.
+3. **Caching Layer:** Place Redis/Memcached in front of the database for hot, repetitive queries with appropriate TTLs and invalidation.
+
+⚠️ **Cost:** Read replicas introduce **replication lag** and eventual consistency — you must design your application to handle stale reads.`,
+    tags: ['System Design', 'PostgreSQL', 'Read Replicas', 'Scaling', 'Replication Lag'],
+  },
+  {
+    id: 'sd-25',
+    category: 'System Design',
+    question: 'What is the difference between synchronous and asynchronous database replication?',
+    answer: `It boils down to a trade-off between **durability (RPO)** and **write latency**:
+
+- **Synchronous Replication:** The Primary waits for the replica to acknowledge writing the WAL before sending a commit success to the client.
+  - *Pros:* Zero data loss on primary crash (RPO = 0).
+  - *Cons:* Write latency is bounded by the slowest replica/network; if the replica fails, primary writes stall.
+- **Asynchronous Replication (Default):** The Primary commits locally and streams WAL in the background without waiting for replica confirmation.
+  - *Pros:* Minimal write latency; replica downtime does not block writes on Primary.
+  - *Cons:* Small replication lag window where un-replicated commits could be lost if Primary abruptly dies.`,
+    tags: ['System Design', 'Replication', 'Sync vs Async', 'PostgreSQL', 'WAL'],
+  },
+  {
+    id: 'sd-26',
+    category: 'System Design',
+    question: 'What is the "read-your-own-writes" problem, and how do you solve it?',
+    answer: `**The Problem:** A user writes data (e.g. posts a comment routed to Primary), and the UI immediately reloads/redirects to read data (routed to Replica). Because of asynchronous replication lag, the replica hasn't caught up yet, and the user's new comment appears to have vanished!
+
+**Solutions:**
+1. **Session Pinning (RYOW Window):** When a user session executes a write, pin all their subsequent reads to the Primary for a short grace period (e.g. 2–5 seconds) before falling back to replicas.
+2. **Causal LSN Tracking:** The write returns the latest WAL Log Sequence Number (LSN). The replica router only serves reads from a replica that has caught up to that LSN.
+3. **Force Primary:** Allow endpoints to explicitly declare \`force_primary=True\` for critical user workflows.`,
+    tags: ['System Design', 'Read-Your-Own-Writes', 'Causal Consistency', 'Replication Lag'],
+  },
+  {
+    id: 'sd-27',
+    category: 'System Design',
+    question: 'What is the CAP theorem tradeoff for a primary-replica database during a network partition?',
+    answer: `During a network partition between the Primary and Replica:
+
+- **If you choose Availability (AP):** The replica continues serving read queries even though it is disconnected from the Primary. The data may become progressively staler, but the system remains responsive.
+- **If you choose Consistency (CP):** The replica refuses to serve reads until it reconnects with the Primary and confirms it has the latest WAL entries. Read availability drops, but stale data is never returned.
+
+Most read-heavy systems choose **Availability** for reads, accepting bounded eventual consistency.`,
+    tags: ['System Design', 'CAP Theorem', 'Eventual Consistency', 'Network Partition'],
+  },
+  {
+    id: 'sd-28',
+    category: 'System Design',
+    question: 'How do you promote a replica to primary if the primary database crashes (failover)?',
+    answer: `1. **Detection:** Distributed health checks detect that the Primary is unreachable.
+2. **Fencing (STONITH):** Ensure the old Primary is completely isolated or shut down to prevent "split-brain" (where two nodes both believe they are Primary and accept divergent writes).
+3. **Standby Catch-up:** Identify the replica with the highest LSN (least data loss).
+4. **Promotion:** Issue \`pg_ctl promote\` (or let automated orchestrators like Patroni / Raft trigger it). The replica removes \`standby.signal\` and begins accepting writes.
+5. **Traffic Redirection:** Reconfigure DNS, load balancers, or connection poolers (PgBouncer) to route writes to the new Primary.`,
+    tags: ['System Design', 'Failover', 'Replica Promotion', 'High Availability', 'Split-Brain'],
+  },
+  // ── React 19 Optimistic UI (Oct 4) ───────────────────────────────────────────
+  {
+    id: 'react-14',
+    category: 'React & Angular',
+    question: 'What is Optimistic UI, and when should you NOT use it?',
+    answer: `Optimistic UI is an interaction design pattern where the user interface immediately updates to reflect the expected outcome of a mutation *before* the server responds.
+
+**When NOT to use it:**
+- **Irreversible high-stakes operations:** Financial transactions, payment submissions, wire transfers, stock purchases.
+- **Complex server-side authorization/validation:** Workflows where the server is highly likely to reject the action based on private business rules.
+- **Destructive mass actions:** Deleting an entire organization or wiping a database, where false visual confirmation followed by rollback causes severe panic.`,
+    tags: ['React', 'Optimistic UI', 'UX', 'System Design'],
+  },
+  {
+    id: 'react-15',
+    category: 'React & Angular',
+    question: 'How do React 19\'s useOptimistic and useTransition hooks work together?',
+    answer: `They work as a coordinated pair for non-blocking concurrent mutations:
+
+1. **\`useTransition\`:** Wraps the asynchronous server call inside \`startTransition(async () => ...)\`. This signals React that the state update is non-urgent and interruptible, keeping inputs and animations responsive.
+2. **\`useOptimistic\`:** Takes the actual base state and an update reducer. You call the optimistic setter *inside* the \`startTransition\` callback. React immediately displays the optimistic state to the user.
+3. When the async action settles, React automatically discards the temporary optimistic overlay and reconciles back to the true server state — providing clean, declarative rollbacks without manual state tracking.`,
+    tags: ['React', 'React 19', 'useOptimistic', 'useTransition', 'Concurrency'],
+  },
+  {
+    id: 'react-16',
+    category: 'React & Angular',
+    question: 'How do you test optimistic update and rollback logic effectively?',
+    answer: `The key is **testing the failure path explicitly**:
+
+1. **Mock the API to reject on demand:** Configure your API mock/MSW to simulate a 500 error or network drop after a set delay.
+2. **Verify optimistic application:** Trigger the mutation and immediately assert that the temporary item exists in the DOM with a "pending" visual state.
+3. **Verify rollback & compensation:** Wait for the rejected Promise to settle. Assert that:
+   - The optimistic state rolled back or converted to an error state.
+   - An inline retry trigger or rollback toast notification is visible.
+   - The user's input/context was not permanently destroyed so they can retry.`,
+    tags: ['React', 'Testing', 'Rollback', 'MSW', 'Optimistic UI'],
+  },
 ];
 
 // ─── Category config ──────────────────────────────────────────────────────────

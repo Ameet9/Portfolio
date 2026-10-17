@@ -17,6 +17,18 @@ interface CaseStudy {
 
 const caseStudies: CaseStudy[] = [
   {
+    id: 'postgres-read-replica',
+    title: 'Read Replica Relay (Postgres WAL Streaming)',
+    date: 'Oct 4',
+    pattern: 'Database Replication & Scaling',
+    problem: 'How do you scale a database that is overwhelmed by high-volume read queries without compromising write integrity or falling victim to replication lag anomalies?',
+    architecture: 'Two PostgreSQL 16 nodes (Primary and Standby Replica) connected via physical Write-Ahead Log (WAL) streaming. A Python smart router (psycopg2) inspects incoming SQL, sending writes to the Primary and reads to the Replica. Crucially, it tracks write timestamps per session to provide Read-Your-Own-Writes causal consistency by temporarily pinning reads to the Primary during the replication lag window.',
+    keyInsight: 'Read scaling isn\'t just adding replicas; it\'s managing the eventual consistency gap. Without Read-Your-Own-Writes pinning, a user creates a comment, the page refreshes, and their comment disappears because the read hit a lagging replica. Smart query routing bridges developer expectations with distributed database realities.',
+    stack: ['PostgreSQL', 'Docker Compose', 'Python', 'psycopg2'],
+    concepts: ['Physical WAL Streaming', 'pg_basebackup', 'Query Routing', 'Read-Your-Own-Writes', 'Replication Lag'],
+    path: 'learning/system-design/postgres-read-replica',
+  },
+  {
     id: 'idempotency-keys',
     title: 'Idempotency Keys for Payment API',
     date: 'Oct 3',
@@ -274,6 +286,7 @@ const patternStyles: Record<string, string> = {
   'Caching Strategies': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
   'Microservice Communication': 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
   'API Safety / Idempotency': 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300',
+  'Database Replication & Scaling': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -466,6 +479,16 @@ const interviewTopics = [
       'How do you handle two identical requests arriving at the exact same time?',
       'Why not just use the database\'s primary key / unique constraint instead of Redis?',
       'Does this approach work across multiple servers behind a load balancer?',
+    ],
+  },
+  {
+    title: 'Database Replication & Scaling',
+    questions: [
+      'How would you scale a database that\'s getting too many read queries?',
+      'What\'s the difference between synchronous and asynchronous replication?',
+      'What happens if a user writes data and then immediately reads it back, and the read goes to a lagging replica?',
+      'What is the CAP theorem, and where does a primary-replica setup fall on it?',
+      'How would you promote a replica to primary if the primary dies?',
     ],
   },
 ];

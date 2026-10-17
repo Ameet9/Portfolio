@@ -1,0 +1,75 @@
+version: '3.8'
+
+# ==============================================================================
+# PostgreSQL 16 Primary-Replica Streaming Replication Cluster
+# Architecture:
+# - primary: Accepts read-write transactions, generates Write-Ahead Logs (WAL),
+#            listens on port 5432.
+# - replica: Hot standby read-only node streaming WAL from primary,
+#            listens on port 5433.
+# ==============================================================================
+
+services:
+  primary:
+    image: postgres:16
+    container_name: postgres_primary
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: postgres
+    # Custom PostgreSQL configurations required for streaming replication:
+    # - wal_level=replica: Write enough WAL detail to support archiving & standby replication.
+    # - max_wal_senders=10: Maximum number of concurrent replication stream connections.
+    # - wal_keep_size=128MB: Retain at least 128MB of past WAL segments to allow replica catch-up.
+    # - hot_standby=on: Allows read queries on standby instances.
+    command: >
+      postgres
+      -c wal_level=replica
+      -c max_wal_senders=10
+      -c wal_keep_size=128MB
+      -c hot_standby=on
+      -c logging_collector=on
+      -c log_replication_commands=on
+    volumes:
+      - ./init-primary.sh:/docker-entrypoint-initdb.d/init-primary.sh:ro
+      - primary_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - replication_net
+
+  replica:
+    image: postgres:16
+    container_name: postgres_replica
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      PRIMARY_HOST: primary
+      PRIMARY_PORT: 5432
+      REPL_USER: replicator
+      PGPASSWORD: replicator_pass
+    volumes:
+      - ./setup-replica.sh:/setup-replica.sh:ro
+      - replica_data:/var/lib/postgresql/data
+    entrypoint: ["/bin/sh", "/setup-replica.sh"]
+    depends_on:
+      primary:
+        condition: service_healthy
+    networks:
+      - replication_net
+
+networks:
+  replication_net:
+    driver: bridge
+
+volumes:
+  primary_data:
+  replica_data:

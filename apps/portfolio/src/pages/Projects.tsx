@@ -712,6 +712,27 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Idempotency', 'SET NX Atomic Lock', 'Race Conditions', 'TTL Tradeoffs'],
     path: 'learning/system-design/idempotency-keys',
   },
+  // Oct 4
+  {
+    id: 'postgres-read-replica',
+    title: 'Read Replica Relay (Postgres WAL Streaming)',
+    date: 'Oct 4',
+    category: 'System Design',
+    stack: ['PostgreSQL', 'Docker Compose', 'Python', 'psycopg2'],
+    description: 'PostgreSQL primary-replica cluster running streaming replication via WAL. Includes a Python smart query router separating write/read traffic with Read-Your-Own-Writes session consistency and a real-time lag benchmark.',
+    concepts: ['Streaming Replication', 'WAL', 'Query Routing', 'Read-Your-Own-Writes', 'Replication Lag'],
+    path: 'learning/system-design/postgres-read-replica',
+  },
+  {
+    id: 'optimistic-comments',
+    title: 'Optimistic Comments Feed (React 19)',
+    date: 'Oct 4',
+    category: 'React',
+    stack: ['React', 'TypeScript', 'Vite'],
+    description: 'A modern comment feed built with React 19 native useOptimistic and useTransition hooks. Provides instant feedback with pending opacity, automatic error rollback, inline retries, and optimistic deletions.',
+    concepts: ['useOptimistic', 'useTransition', 'Error Rollback', 'Compensating Transactions'],
+    path: 'learning/react/optimistic-comments',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────
