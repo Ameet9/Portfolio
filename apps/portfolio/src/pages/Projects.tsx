@@ -701,6 +701,17 @@ const dailyProjects: DailyProject[] = [
     concepts: ['Monotonic Stack', 'Amortized O(n)', 'Oracle Testing'],
     path: 'learning/dsa/daily-temperatures',
   },
+  // Oct 3
+  {
+    id: 'idempotency-keys',
+    title: 'Idempotency Keys for Payment API',
+    date: 'Oct 3',
+    category: 'System Design',
+    stack: ['Python', 'FastAPI', 'Redis', 'Docker'],
+    description: 'A payment API that guarantees exactly-once charge processing using client-generated idempotency keys backed by Redis. Uses atomic SET NX EX to prevent race conditions where concurrent duplicate requests could double-charge a card.',
+    concepts: ['Idempotency', 'SET NX Atomic Lock', 'Race Conditions', 'TTL Tradeoffs'],
+    path: 'learning/system-design/idempotency-keys',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────

@@ -1358,6 +1358,67 @@ You run your standard monotonic stack \`for\` loop from \`0\` to \`2n - 1\`. Thi
 This proves correctness through **property-based testing**, catching tricky off-by-one errors that small hardcoded examples usually miss.`,
     tags: ['DSA', 'Testing', 'Oracle', 'Property Testing'],
   },
+  // ── Idempotency & API Safety (Oct 3) ──────────────────────────────────────────
+  {
+    id: 'sd-19',
+    category: 'System Design',
+    question: 'How would you make a payment API safe against duplicate requests from retries?',
+    answer: `Use the **Idempotency Key** pattern. The client generates a unique key (UUID) before sending the request and includes it in an \`Idempotency-Key\` header. The server:
+
+1. Checks if the key already exists in a shared store (Redis/DB).
+2. If it exists, returns the **stored response** — no business logic runs.
+3. If it doesn't exist, processes the payment, stores the response keyed by the idempotency key, and returns it.
+
+This guarantees **exactly-once semantics** from the server's perspective, even if the client fires the same request 100 times.`,
+    tags: ['System Design', 'Idempotency', 'Payment API', 'Exactly-Once'],
+  },
+  {
+    id: 'sd-20',
+    category: 'System Design',
+    question: 'What is the difference between idempotency and retrying with exponential backoff?',
+    answer: `They solve **different sides** of the same reliability problem:
+
+- **Exponential backoff** is the **client's** strategy for *when* to retry a failed request (wait longer between each attempt to avoid overwhelming the server).
+- **Idempotency** is the **server's** guarantee that makes retrying *safe* (no matter how many times the same request arrives, the side effect happens exactly once).
+
+You need **both**: backoff controls the retry cadence, idempotency controls what happens when the retry lands. Without idempotency, even perfectly-timed retries can cause double charges.`,
+    tags: ['System Design', 'Idempotency', 'Exponential Backoff', 'Retry'],
+  },
+  {
+    id: 'sd-21',
+    category: 'System Design',
+    question: 'How do you handle two identical requests arriving at the exact same time (race condition in idempotency)?',
+    answer: `The naive "check then write" pattern breaks under concurrency — both requests read "key doesn't exist" before either writes.
+
+The fix: use an **atomic claim** operation. In Redis: \`SET idempotency:{key} "processing" NX EX 30\`. The \`NX\` flag means "only set if the key does NOT exist," and Redis executes it atomically. Only one caller wins the race; the loser immediately sees the key exists and either waits for the result or returns a conflict.
+
+The 30s expiry on the "processing" placeholder prevents permanent deadlocks if the winning worker crashes before completing.`,
+    tags: ['System Design', 'Race Conditions', 'Redis SET NX', 'Atomicity'],
+  },
+  {
+    id: 'sd-22',
+    category: 'System Design',
+    question: 'For idempotency, why not just use the database primary key / unique constraint instead of Redis?',
+    answer: `You absolutely can, and it's a valid alternative! Insert a row with a \`UNIQUE(idempotency_key)\` constraint, catch the constraint violation on duplicate, and return the stored result.
+
+**Trade-offs:**
+- **DB approach:** Durable (survives restarts), transactional (can wrap the charge + key insert in one ACID transaction), simpler stack. But slower due to disk I/O.
+- **Redis approach:** Much faster (in-memory), supports atomic \`SET NX EX\` natively, natural TTL support for auto-cleanup. But not durable by default and needs careful replication/persistence config.
+
+In practice, high-throughput payment APIs often use Redis as the fast-path check and write to the DB as the durable record of truth.`,
+    tags: ['System Design', 'Redis vs DB', 'Unique Constraints', 'Durability'],
+  },
+  {
+    id: 'sd-23',
+    category: 'System Design',
+    question: 'Does the idempotency key approach work across multiple API servers behind a load balancer?',
+    answer: `Yes — that's the entire reason the key store must be **external and shared** (Redis or a database), not an in-memory Python dict.
+
+If you stored idempotency keys in each server's local memory, Request 1 might hit Server A (which records the key), but the retry might hit Server B (which has never seen it), resulting in a double-charge.
+
+With a shared Redis instance, all API servers check and write to the same store, making the idempotency guarantee hold regardless of which server handles which request.`,
+    tags: ['System Design', 'Distributed State', 'Load Balancing', 'Shared Store'],
+  },
 ];
 
 // ─── Category config ──────────────────────────────────────────────────────────

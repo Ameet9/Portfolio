@@ -17,6 +17,18 @@ interface CaseStudy {
 
 const caseStudies: CaseStudy[] = [
   {
+    id: 'idempotency-keys',
+    title: 'Idempotency Keys for Payment API',
+    date: 'Oct 3',
+    pattern: 'API Safety / Idempotency',
+    problem: 'How do you prevent a payment API from charging a credit card twice when the client retries a request due to a network timeout or dropped connection?',
+    architecture: 'A FastAPI endpoint validates a client-generated Idempotency-Key header. On first request, it atomically claims the key in Redis using SET NX EX (set-if-not-exists with a 30s TTL lock). If a concurrent duplicate arrives before the first completes, it polls Redis briefly until the final result appears. The completed response is stored with a 24h TTL for future replays.',
+    keyInsight: 'The naive "check then write" pattern is broken under concurrency — two requests can both pass the check before either writes. The atomic SET NX command is the fix: it combines "does this key exist?" and "claim it" into a single Redis operation that only one caller can win, no matter how many arrive simultaneously.',
+    stack: ['Python', 'FastAPI', 'Redis', 'Docker'],
+    concepts: ['Idempotency Keys', 'SET NX Atomic Lock', 'Race Conditions', 'TTL Tradeoffs'],
+    path: 'learning/system-design/idempotency-keys',
+  },
+  {
     id: 'grpc-microservices',
     title: 'gRPC Order & Inventory Microservices',
     date: 'Oct 2',
@@ -261,6 +273,7 @@ const patternStyles: Record<string, string> = {
   'Distributed Transactions': 'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300',
   'Caching Strategies': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
   'Microservice Communication': 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
+  'API Safety / Idempotency': 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300',
 };
 
 // ─── Interview topics ─────────────────────────────────────────────────────────
@@ -443,6 +456,16 @@ const interviewTopics = [
       'What are the four types of gRPC communication patterns?',
       'How do you handle backward compatibility when a proto schema changes?',
       'How would you secure service-to-service gRPC calls in production?',
+    ],
+  },
+  {
+    title: 'Idempotency & API Safety',
+    questions: [
+      'How would you make a payment API safe against duplicate requests from retries?',
+      'What\'s the difference between idempotency and retrying with exponential backoff?',
+      'How do you handle two identical requests arriving at the exact same time?',
+      'Why not just use the database\'s primary key / unique constraint instead of Redis?',
+      'Does this approach work across multiple servers behind a load balancer?',
     ],
   },
 ];
