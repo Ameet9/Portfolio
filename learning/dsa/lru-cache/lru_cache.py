@@ -9,6 +9,8 @@ Real-world usage: This is the core algorithm behind Redis's LRU eviction,
 browser caches, CDN edge caches, and database buffer pools.
 """
 from __future__ import annotations
+import functools
+from typing import Any
 
 
 class Node:
@@ -21,7 +23,7 @@ class Node:
     """
     __slots__ = ('key', 'value', 'prev', 'next')
     
-    def __init__(self, key: int = 0, value: int = 0):
+    def __init__(self, key: Any = 0, value: Any = 0):
         self.key = key
         self.value = value
         self.prev: Node | None = None
@@ -37,7 +39,7 @@ class LRUCache:
             
         self.capacity = capacity
         # Mapping from key to the corresponding Node in the DLL
-        self.cache: dict[int, Node] = {}
+        self.cache: dict[Any, Node] = {}
         
         # Sentinel/dummy nodes to avoid edge cases during insertion and deletion.
         # head.next will always point to the most recently used node.
@@ -47,7 +49,7 @@ class LRUCache:
         self.head.next = self.tail
         self.tail.prev = self.head
     
-    def get(self, key: int) -> int:
+    def get(self, key: Any) -> Any:
         """Get the value of the key if it exists, otherwise return -1."""
         if key not in self.cache:
             return -1
@@ -60,7 +62,7 @@ class LRUCache:
         
         return node.value
     
-    def put(self, key: int, value: int) -> None:
+    def put(self, key: Any, value: Any) -> None:
         """Update the value of the key if it exists, or insert the key-value pair."""
         if key in self.cache:
             # Key exists, update the value and move it to the front
@@ -114,3 +116,26 @@ class LRUCache:
             nodes.append(f"({curr.key}:{curr.value})")
             curr = curr.next
         return f"LRUCache(capacity={self.capacity}, state=[{' <-> '.join(nodes)}])"
+
+
+def lru_cached(capacity: int = 128):
+    """
+    Function decorator that memoizes return values using LRUCache.
+    Replicates the functionality of functools.lru_cache from scratch.
+    """
+    def decorator(fn):
+        cache = LRUCache(capacity)
+        
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            cache_key = (args, tuple(sorted(kwargs.items())))
+            val = cache.get(cache_key)
+            if val != -1:
+                return val
+            result = fn(*args, **kwargs)
+            cache.put(cache_key, result)
+            return result
+            
+        wrapper.cache = cache
+        return wrapper
+    return decorator

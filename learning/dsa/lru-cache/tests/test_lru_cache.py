@@ -122,3 +122,36 @@ def test_thread_safety_dict_version():
     # As long as it didn't throw an exception, it "passed". 
     # Proper thread safety requires explicit locking.
     assert True
+
+
+def test_lru_cached_decorator():
+    """Verify the @lru_cached decorator correctly memoizes function executions."""
+    from lru_cache import lru_cached
+
+    call_count = 0
+
+    @lru_cached(capacity=3)
+    def expensive_square(n: int) -> int:
+        nonlocal call_count
+        call_count += 1
+        return n * n
+
+    assert expensive_square(4) == 16
+    assert call_count == 1
+
+    # Cache hit — should not re-invoke function
+    assert expensive_square(4) == 16
+    assert call_count == 1
+
+    # Fill cache
+    assert expensive_square(5) == 25
+    assert expensive_square(6) == 36
+    assert call_count == 3
+
+    # Add 4th item, evicting 4 (LRU)
+    assert expensive_square(7) == 49
+    assert call_count == 4
+
+    # 4 was evicted, so re-calling it triggers execution
+    assert expensive_square(4) == 16
+    assert call_count == 5
