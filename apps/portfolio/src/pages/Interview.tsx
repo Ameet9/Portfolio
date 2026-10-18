@@ -1520,6 +1520,66 @@ Most read-heavy systems choose **Availability** for reads, accepting bounded eve
    - The user's input/context was not permanently destroyed so they can retry.`,
     tags: ['React', 'Testing', 'Rollback', 'MSW', 'Optimistic UI'],
   },
+  // ── Sliding Window Algorithms (Oct 7) ────────────────────────────────────────
+  {
+    id: 'dsa-37',
+    category: 'DSA',
+    question: 'When should you reach for the sliding window technique in an interview?',
+    answer: `The sliding window technique applies whenever a problem specifies:
+1. **Contiguous sequence:** A contiguous subarray, substring, or slice (not arbitrary subsets or subsequences).
+2. **Optimization / Constraint query:** Finding the longest, shortest, or counting windows that satisfy a specific condition (e.g. at most $K$ distinct elements, sum $\le K$, or containing all required target characters).
+
+Instead of re-evaluating each window from scratch ($\mathcal{O}(n^2)$), you maintain running state across adjacent windows, shifting the boundary in amortized $\mathcal{O}(n)$ time.`,
+    tags: ['DSA', 'Sliding Window', 'Two Pointers', 'Patterns'],
+  },
+  {
+    id: 'dsa-38',
+    category: 'DSA',
+    question: 'Walk through the time complexity improvement for "longest substring without repeating characters".',
+    answer: `**Brute-force baseline ($\mathcal{O}(n^2)$ or $\mathcal{O}(n^3)$):** Tests all $\mathcal{O}(n^2)$ substring pairs and scans each substring with a set to verify uniqueness ($\mathcal{O}(n)$).
+
+**Sliding Window with Hash Map ($\mathcal{O}(n)$):**
+- Maintain pointers \`left\` and \`right\`, and a hash map of \`char -> last_seen_index\`.
+- As \`right\` advances, if \`char\` was previously seen at index $\ge$ \`left\`, we immediately jump \`left = last_seen[char] + 1\`.
+- Because \`left\` and \`right\` only move monotonically forward from $0$ to $n-1$, each character is visited at most twice. Total time is strictly $\mathcal{O}(n)$ with $\mathcal{O}(\min(n, |\Sigma|))$ space.`,
+    tags: ['DSA', 'Sliding Window', 'Time Complexity', 'Amortized Analysis'],
+  },
+  {
+    id: 'dsa-39',
+    category: 'DSA',
+    question: 'In "minimum window substring", why do you shrink the window *while it is still valid*?',
+    answer: `This is the fundamental duality of sliding window problems:
+
+- **For Maximization (e.g., longest substring with $\le K$ distinct):** You expand \`right\` to grow the window, and you shrink \`left\` **while the window is invalid** to restore validity.
+- **For Minimization (e.g., minimum window substring containing $T$):** You expand \`right\` until the window becomes valid. Once valid, your goal is to find the **smallest** valid slice! Therefore, you shrink \`left\` **while the window remains valid**, recording the minimum length at each step until dropping one more character breaks validity.`,
+    tags: ['DSA', 'Sliding Window', 'Minimum Window Substring', 'Two Pointers'],
+  },
+  {
+    id: 'dsa-40',
+    category: 'DSA',
+    question: 'What is the difference between a fixed-size and a variable-size sliding window?',
+    answer: `1. **Fixed-Size Window:** The window length $K$ is invariant. Both \`left\` and \`right\` slide forward in lockstep (\`left++\`, \`right++\`).
+   - *Examples:* Maximum sum subarray of size $K$, finding all anagrams of string $P$ in $S$.
+2. **Variable-Size Window:** Pointers move independently driven by dynamic state. \`right\` expands greedily until a condition is breached or satisfied; \`left\` contracts conditionally.
+   - *Examples:* Longest substring without repeats, shortest subarray with sum $\ge S$.`,
+    tags: ['DSA', 'Sliding Window', 'Fixed vs Variable'],
+  },
+  {
+    id: 'dsa-41',
+    category: 'DSA',
+    question: 'How does the sliding window pattern extend to numeric problems like "longest subarray with sum at most K"?',
+    answer: `It uses the exact same **shrink-while-invalid** template, replacing character frequencies with an accumulator:
+
+1. Maintain running scalar \`current_sum = 0\`.
+2. Expand \`right\` from $0$ to $n-1$: \`current_sum += nums[right]\`.
+3. \`while current_sum > k and left <= right:\`
+   - \`current_sum -= nums[left]\`
+   - \`left += 1\`
+4. Update \`max_len = max(max_len, right - left + 1)\`.
+
+⚠️ **Prerequisite:** Elements in \`nums\` must be **non-negative**. If negative numbers exist, the monotonic property breaks (expanding could decrease sum, shrinking could increase sum), and you must use a Prefix Sum + Hash Map / Monotonic Deque approach instead.`,
+    tags: ['DSA', 'Sliding Window', 'Subarray Sum', 'Prefix Sum'],
+  },
 ];
 
 // ─── Category config ──────────────────────────────────────────────────────────

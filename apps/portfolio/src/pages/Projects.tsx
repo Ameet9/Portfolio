@@ -733,6 +733,17 @@ const dailyProjects: DailyProject[] = [
     concepts: ['useOptimistic', 'useTransition', 'Error Rollback', 'Compensating Transactions'],
     path: 'learning/react/optimistic-comments',
   },
+  // Oct 7
+  {
+    id: 'substring-sliding-window',
+    title: 'Substring Sliding Window Toolkit',
+    date: 'Oct 7',
+    category: 'DSA',
+    stack: ['Python', 'CLI', 'pytest'],
+    description: 'A modular toolkit solving three classic sliding window problems: longest substring without repeats, k-distinct characters, and minimum window substring. Includes step-by-step bracket visualizers and empirical benchmarks.',
+    concepts: ['Sliding Window', 'Two Pointers', 'Shrink-while-valid', 'Shrink-while-invalid', 'Amortized O(n)'],
+    path: 'learning/dsa/substring-sliding-window',
+  },
 ];
 
 // ─── Category style map ───────────────────────────────────────────────────────
